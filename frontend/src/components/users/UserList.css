@@ -1,0 +1,112 @@
+.user-list {
+  background: #1a1a2e;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.user-list table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.user-list th,
+.user-list td {
+  padding: 1rem;
+  text-align: left;
+}
+
+.user-list th {
+  background: #16213e;
+  color: #a0a0a0;
+  font-weight: 500;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+}
+
+.user-list td {
+  color: #fff;
+  border-bottom: 1px solid #333;
+}
+
+.user-list tr:last-child td {
+  border-bottom: none;
+}
+
+.user-list tr:hover td {
+  background: #16213e;
+}
+
+.user-list .rank {
+  color: #a0a0a0;
+  font-weight: 500;
+}
+
+.user-list .name {
+  font-weight: 600;
+}
+
+.user-list .rating {
+  color: #4a9eff;
+  font-weight: 600;
+}
+
+.user-list .rd {
+  color: #a0a0a0;
+  font-size: 0.875rem;
+}
+
+.user-list .memo {
+  color: #a0a0a0;
+  font-size: 0.875rem;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-list .actions {
+  text-align: right;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.btn-edit {
+  background: transparent;
+  color: #4a9eff;
+  border: 1px solid #4a9eff;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: all 0.2s;
+}
+
+.btn-edit:hover {
+  background: #4a9eff;
+  color: #fff;
+}
+
+.btn-delete {
+  background: transparent;
+  color: #ff4a4a;
+  border: 1px solid #ff4a4a;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: all 0.2s;
+}
+
+.btn-delete:hover {
+  background: #ff4a4a;
+  color: #fff;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #a0a0a0;
+  background: #1a1a2e;
+  border-radius: 8px;
+}

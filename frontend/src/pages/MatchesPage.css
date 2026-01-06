@@ -1,0 +1,83 @@
+.matches-page .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.matches-page h1 {
+  color: #fff;
+  margin: 0;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-import {
+  background: transparent;
+  color: #4ade80;
+  border: 1px solid #4ade80;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-import:hover {
+  background: #4ade80;
+  color: #0f0f1a;
+}
+
+.btn-danger {
+  background: transparent;
+  color: #ff4a4a;
+  border: 1px solid #ff4a4a;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-danger:hover {
+  background: #ff4a4a;
+  color: #fff;
+}
+
+.btn-add {
+  background: #4a9eff;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-add:hover:not(:disabled) {
+  background: #3a8eef;
+}
+
+.btn-add:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.warning {
+  background: #fbbf2420;
+  color: #fbbf24;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.loading {
+  text-align: center;
+  color: #a0a0a0;
+  padding: 3rem;
+}

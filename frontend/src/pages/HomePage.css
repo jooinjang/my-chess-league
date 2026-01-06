@@ -1,0 +1,162 @@
+.home-page h1 {
+  color: #fff;
+  margin-bottom: 2rem;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.rankings-section,
+.matches-section {
+  background: #1a1a2e;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.rankings-section h2,
+.matches-section h2 {
+  color: #fff;
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+}
+
+.empty {
+  color: #a0a0a0;
+  text-align: center;
+  padding: 2rem;
+}
+
+.rankings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ranking-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  background: #16213e;
+  border-radius: 4px;
+}
+
+.ranking-item .rank {
+  width: 40px;
+  color: #a0a0a0;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.ranking-item .player-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.ranking-item .player-main {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ranking-item .name {
+  color: #fff;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ranking-item .player-memo {
+  color: #666;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 250px;
+}
+
+.ranking-item .record {
+  color: #666;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.ranking-item .rating-change {
+  font-size: 0.75rem;
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+.ranking-item .rating-change.positive {
+  color: #4ade80;
+}
+
+.ranking-item .rating-change.negative {
+  color: #f87171;
+}
+
+.ranking-item .rating-change.neutral {
+  color: #a0a0a0;
+}
+
+.ranking-item .rating {
+  color: #4a9eff;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}
+
+.matches-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.match-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: #16213e;
+  border-radius: 4px;
+}
+
+.match-item .players {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #a0a0a0;
+}
+
+.match-item .players .winner {
+  color: #4ade80;
+  font-weight: 600;
+}
+
+.match-item .vs {
+  color: #666;
+  font-size: 0.75rem;
+}
+
+.match-item .result {
+  color: #fff;
+  font-weight: 700;
+}
+
+.loading {
+  text-align: center;
+  color: #a0a0a0;
+  padding: 3rem;
+}

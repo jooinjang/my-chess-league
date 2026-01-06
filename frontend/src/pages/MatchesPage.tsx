@@ -1,0 +1,131 @@
+import { useEffect, useState } from 'react';
+import { User, Match, CreateMatchRequest } from '../types';
+import { userApi, matchApi } from '../api';
+import { MatchList, MatchForm, ChesscomImport } from '../components/matches';
+import './MatchesPage.css';
+
+export function MatchesPage() {
+  const [matches, setMatches] = useState<Match[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [showChesscomImport, setShowChesscomImport] = useState(false);
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      const [matchesData, usersData] = await Promise.all([
+        matchApi.getAll(),
+        userApi.getAll(),
+      ]);
+      setMatches(matchesData);
+      setUsers(usersData);
+    } catch (error) {
+      console.error('Failed to load data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreateMatch = async (data: CreateMatchRequest) => {
+    await matchApi.create(data);
+    setShowForm(false);
+    loadData();
+  };
+
+  const handleDeleteMatch = async (id: number) => {
+    try {
+      await matchApi.delete(id);
+      loadData();
+    } catch (error) {
+      console.error('Failed to delete match:', error);
+    }
+  };
+
+  const handleChesscomImportComplete = () => {
+    setShowChesscomImport(false);
+    loadData();
+  };
+
+  const handleDeleteAllMatches = async () => {
+    if (!window.confirm('Are you sure you want to delete ALL matches? This will also reset all user ratings to initial values. This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      await matchApi.deleteAll();
+      loadData();
+    } catch (error) {
+      console.error('Failed to delete all matches:', error);
+    }
+  };
+
+  // Check if any users have Chess.com username
+  const hasChesscomUsers = users.filter(u => u.chesscom_username).length >= 2;
+
+  if (loading) {
+    return <div className="loading">Loading...</div>;
+  }
+
+  return (
+    <div className="matches-page">
+      <div className="page-header">
+        <h1>Matches</h1>
+        {!showForm && !showChesscomImport && (
+          <div className="header-buttons">
+            {matches.length > 0 && (
+              <button
+                className="btn-danger"
+                onClick={handleDeleteAllMatches}
+              >
+                Reset All
+              </button>
+            )}
+            {hasChesscomUsers && (
+              <button
+                className="btn-import"
+                onClick={() => setShowChesscomImport(true)}
+              >
+                Import from Chess.com
+              </button>
+            )}
+            <button
+              className="btn-add"
+              onClick={() => setShowForm(true)}
+              disabled={users.length < 2}
+            >
+              + Record Match
+            </button>
+          </div>
+        )}
+      </div>
+
+      {users.length < 2 && (
+        <div className="warning">
+          At least 2 users are required to record a match.
+        </div>
+      )}
+
+      {showChesscomImport && (
+        <ChesscomImport
+          users={users}
+          onComplete={handleChesscomImportComplete}
+          onCancel={() => setShowChesscomImport(false)}
+        />
+      )}
+
+      {showForm && (
+        <MatchForm
+          users={users}
+          onSubmit={handleCreateMatch}
+          onCancel={() => setShowForm(false)}
+        />
+      )}
+
+      <MatchList matches={matches} onDelete={handleDeleteMatch} />
+    </div>
+  );
+}

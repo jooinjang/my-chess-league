@@ -1,0 +1,250 @@
+.chesscom-import {
+  background: #1a1a2e;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.chesscom-import h3 {
+  margin: 0 0 1rem;
+  color: #fff;
+}
+
+.chesscom-import .error-message {
+  background: #ff4a4a20;
+  color: #ff4a4a;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.search-section {
+  margin-bottom: 1.5rem;
+}
+
+.chesscom-import .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .chesscom-import .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chesscom-import .form-group {
+  margin-bottom: 0;
+}
+
+.chesscom-import .form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #a0a0a0;
+  font-size: 0.875rem;
+}
+
+.chesscom-import .form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #333;
+  border-radius: 4px;
+  background: #0f0f1a;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.chesscom-import .form-group select:focus {
+  outline: none;
+  border-color: #4a9eff;
+}
+
+.btn-search {
+  padding: 0.75rem 1.5rem;
+  background: #4a9eff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-search:hover:not(:disabled) {
+  background: #3a8eef;
+}
+
+.btn-search:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.results-section {
+  margin-bottom: 1.5rem;
+}
+
+.no-games {
+  text-align: center;
+  color: #a0a0a0;
+  padding: 2rem;
+  background: #0f0f1a;
+  border-radius: 4px;
+}
+
+.select-all {
+  padding: 0.75rem;
+  background: #16213e;
+  border-radius: 4px 4px 0 0;
+  border-bottom: 1px solid #333;
+}
+
+.select-all label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.select-all input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #4a9eff;
+}
+
+.games-list {
+  max-height: 400px;
+  overflow-y: auto;
+  background: #0f0f1a;
+  border-radius: 0 0 4px 4px;
+}
+
+.game-item {
+  border-bottom: 1px solid #1a1a2e;
+}
+
+.game-item:last-child {
+  border-bottom: none;
+}
+
+.game-item label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.game-item label:hover {
+  background: #1a1a2e;
+}
+
+.game-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #4a9eff;
+  flex-shrink: 0;
+}
+
+.game-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.game-date {
+  color: #a0a0a0;
+  font-size: 0.8rem;
+  min-width: 140px;
+}
+
+.game-players {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+.game-players .player {
+  color: #fff;
+}
+
+.game-players .player.white {
+  color: #f0f0f0;
+}
+
+.game-players .player.black {
+  color: #a0a0a0;
+}
+
+.game-players .vs {
+  color: #666;
+  font-size: 0.75rem;
+}
+
+.game-result {
+  font-weight: 600;
+  color: #4a9eff;
+  min-width: 40px;
+  text-align: center;
+}
+
+.game-type {
+  color: #666;
+  font-size: 0.75rem;
+  text-transform: capitalize;
+  background: #1a1a2e;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.chesscom-import .form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.chesscom-import .btn-primary,
+.chesscom-import .btn-secondary {
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.chesscom-import .btn-primary {
+  background: #4a9eff;
+  color: #fff;
+  border: none;
+}
+
+.chesscom-import .btn-primary:hover:not(:disabled) {
+  background: #3a8eef;
+}
+
+.chesscom-import .btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.chesscom-import .btn-secondary {
+  background: transparent;
+  color: #a0a0a0;
+  border: 1px solid #333;
+}
+
+.chesscom-import .btn-secondary:hover {
+  background: #333;
+  color: #fff;
+}
