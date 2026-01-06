@@ -41,6 +41,17 @@
   font-size: 0.875rem;
 }
 
+.unrated-badge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.15rem 0.4rem;
+  font-size: 0.65rem;
+  background: #a0a0a020;
+  color: #a0a0a0;
+  border-radius: 3px;
+  vertical-align: middle;
+}
+
 .match-list .player {
   display: flex;
   flex-direction: column;

@@ -58,12 +58,8 @@ func (s *MatchService) CreateMatch(req *models.CreateMatchRequest) (*models.Matc
 		return nil, errors.New("white and black player cannot be the same")
 	}
 
-	// Calculate new ratings
-	newWhiteRating, newWhiteRD, newBlackRating, newBlackRD := s.glickoService.ProcessMatch(
-		whitePlayer.Rating, whitePlayer.RatingDeviation,
-		blackPlayer.Rating, blackPlayer.RatingDeviation,
-		string(req.Result),
-	)
+	// Determine if match is rated (default: true)
+	isRated := req.Rated == nil || *req.Rated
 
 	// Create match record
 	match := models.Match{
@@ -71,40 +67,61 @@ func (s *MatchService) CreateMatch(req *models.CreateMatchRequest) (*models.Matc
 		BlackPlayerID:     req.BlackPlayerID,
 		Result:            req.Result,
 		PlayedAt:          req.PlayedAt,
+		Rated:             isRated,
 		WhiteRatingBefore: whitePlayer.Rating,
 		BlackRatingBefore: blackPlayer.Rating,
-		WhiteRatingAfter:  newWhiteRating,
-		BlackRatingAfter:  newBlackRating,
 		ChesscomGameID:    req.ChesscomGameID,
 	}
 
 	// Start transaction
 	tx := database.DB.Begin()
 
-	// Save match
-	if err := tx.Create(&match).Error; err != nil {
-		tx.Rollback()
-		return nil, err
-	}
+	if isRated {
+		// Calculate new ratings only for rated matches
+		newWhiteRating, newWhiteRD, newBlackRating, newBlackRD := s.glickoService.ProcessMatch(
+			whitePlayer.Rating, whitePlayer.RatingDeviation,
+			blackPlayer.Rating, blackPlayer.RatingDeviation,
+			string(req.Result),
+		)
 
-	// Update white player rating
-	if err := tx.Model(&models.User{}).Where("id = ?", req.WhitePlayerID).
-		Updates(map[string]interface{}{
-			"rating":           newWhiteRating,
-			"rating_deviation": newWhiteRD,
-		}).Error; err != nil {
-		tx.Rollback()
-		return nil, err
-	}
+		match.WhiteRatingAfter = newWhiteRating
+		match.BlackRatingAfter = newBlackRating
 
-	// Update black player rating
-	if err := tx.Model(&models.User{}).Where("id = ?", req.BlackPlayerID).
-		Updates(map[string]interface{}{
-			"rating":           newBlackRating,
-			"rating_deviation": newBlackRD,
-		}).Error; err != nil {
-		tx.Rollback()
-		return nil, err
+		// Save match
+		if err := tx.Create(&match).Error; err != nil {
+			tx.Rollback()
+			return nil, err
+		}
+
+		// Update white player rating
+		if err := tx.Model(&models.User{}).Where("id = ?", req.WhitePlayerID).
+			Updates(map[string]interface{}{
+				"rating":           newWhiteRating,
+				"rating_deviation": newWhiteRD,
+			}).Error; err != nil {
+			tx.Rollback()
+			return nil, err
+		}
+
+		// Update black player rating
+		if err := tx.Model(&models.User{}).Where("id = ?", req.BlackPlayerID).
+			Updates(map[string]interface{}{
+				"rating":           newBlackRating,
+				"rating_deviation": newBlackRD,
+			}).Error; err != nil {
+			tx.Rollback()
+			return nil, err
+		}
+	} else {
+		// Unrated match - no rating changes
+		match.WhiteRatingAfter = whitePlayer.Rating
+		match.BlackRatingAfter = blackPlayer.Rating
+
+		// Save match only
+		if err := tx.Create(&match).Error; err != nil {
+			tx.Rollback()
+			return nil, err
+		}
 	}
 
 	tx.Commit()
@@ -121,26 +138,9 @@ func (s *MatchService) DeleteMatch(id uint) error {
 }
 
 func (s *MatchService) DeleteAllMatches() (int64, error) {
-	tx := database.DB.Begin()
-
-	// Delete all matches
-	result := tx.Unscoped().Where("1 = 1").Delete(&models.Match{})
-	if result.Error != nil {
-		tx.Rollback()
-		return 0, result.Error
-	}
-
-	// Reset all user ratings to initial values
-	if err := tx.Model(&models.User{}).Where("1 = 1").Updates(map[string]interface{}{
-		"rating":           InitialRating,
-		"rating_deviation": InitialRD,
-	}).Error; err != nil {
-		tx.Rollback()
-		return 0, err
-	}
-
-	tx.Commit()
-	return result.RowsAffected, nil
+	// Delete all matches (ratings are NOT reset - only user deletion resets ratings)
+	result := database.DB.Unscoped().Where("1 = 1").Delete(&models.Match{})
+	return result.RowsAffected, result.Error
 }
 
 // CreateMatchBulk creates multiple matches in order (sorted by PlayedAt)

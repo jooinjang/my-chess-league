@@ -20,6 +20,10 @@
   text-decoration: none;
 }
 
+.logo-my {
+  color: #4a9eff;
+}
+
 .nav {
   display: flex;
   gap: 1.5rem;

@@ -51,7 +51,7 @@ export function MatchesPage() {
   };
 
   const handleDeleteAllMatches = async () => {
-    if (!window.confirm('Are you sure you want to delete ALL matches? This will also reset all user ratings to initial values. This action cannot be undone.')) {
+    if (!window.confirm('Are you sure you want to delete ALL matches? This action cannot be undone. (Ratings will NOT be reset)')) {
       return;
     }
 

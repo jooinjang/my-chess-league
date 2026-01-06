@@ -8,6 +8,7 @@ export interface Match {
   black_player_id: number;
   result: MatchResult;
   played_at: string;
+  rated: boolean;
   white_rating_before: number;
   black_rating_before: number;
   white_rating_after: number;
@@ -23,6 +24,7 @@ export interface CreateMatchRequest {
   black_player_id: number;
   result: MatchResult;
   played_at: string;
+  rated?: boolean;
   chesscom_game_id?: string;
 }
 

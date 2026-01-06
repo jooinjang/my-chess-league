@@ -62,7 +62,10 @@ export function MatchList({ matches, onDelete }: MatchListProps) {
 
             return (
               <tr key={match.id}>
-                <td className="date">{formatDate(match.played_at)}</td>
+                <td className="date">
+                  {formatDate(match.played_at)}
+                  {!match.rated && <span className="unrated-badge">Unrated</span>}
+                </td>
                 <td className="player white">
                   <span className="name">{match.white_player?.name || 'Unknown'}</span>
                   <span className="rating">({Math.round(match.white_rating_before)})</span>

@@ -25,6 +25,7 @@ export function ChesscomImport({ users, onComplete, onCancel }: ChesscomImportPr
   } | null>(null);
 
   const [selectedGameIds, setSelectedGameIds] = useState<Set<string>>(new Set());
+  const [rated, setRated] = useState(true);
   const [loading, setLoading] = useState(false);
   const [importing, setImporting] = useState(false);
   const [error, setError] = useState('');
@@ -133,6 +134,7 @@ export function ChesscomImport({ users, onComplete, onCancel }: ChesscomImportPr
           black_player_id: blackPlayerId,
           result: convertToMatchResult(game),
           played_at: new Date(game.end_time * 1000).toISOString(),
+          rated,
           chesscom_game_id: game.game_id,
         };
       });
@@ -283,6 +285,22 @@ export function ChesscomImport({ users, onComplete, onCancel }: ChesscomImportPr
               </div>
             </>
           )}
+        </div>
+      )}
+
+      {searchDone && availableGames.length > 0 && (
+        <div className="import-options">
+          <label className="rated-toggle">
+            <input
+              type="checkbox"
+              checked={rated}
+              onChange={(e) => setRated(e.target.checked)}
+            />
+            <span className="toggle-label">Rated Game</span>
+            <span className="toggle-hint">
+              {rated ? '레이팅에 반영됩니다' : '레이팅에 반영되지 않습니다'}
+            </span>
+          </label>
         </div>
       )}
 

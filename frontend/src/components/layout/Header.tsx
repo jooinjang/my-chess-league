@@ -10,7 +10,7 @@ export function Header() {
     <header className="header">
       <div className="header-container">
         <Link to="/" className="logo">
-          Chess League
+          <span className="logo-my">My</span> Chess League
         </Link>
         <nav className="nav">
           <Link to="/" className={`nav-link ${isActive('/') ? 'active' : ''}`}>

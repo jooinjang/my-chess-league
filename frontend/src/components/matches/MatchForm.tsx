@@ -13,6 +13,7 @@ export function MatchForm({ users, onSubmit, onCancel }: MatchFormProps) {
   const [blackPlayerId, setBlackPlayerId] = useState('');
   const [result, setResult] = useState<MatchResult>('white_win');
   const [playedAt, setPlayedAt] = useState(new Date().toISOString().slice(0, 16));
+  const [rated, setRated] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -33,6 +34,7 @@ export function MatchForm({ users, onSubmit, onCancel }: MatchFormProps) {
         black_player_id: parseInt(blackPlayerId),
         result,
         played_at: new Date(playedAt).toISOString(),
+        rated,
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create match');
@@ -128,6 +130,20 @@ export function MatchForm({ users, onSubmit, onCancel }: MatchFormProps) {
           onChange={(e) => setPlayedAt(e.target.value)}
           required
         />
+      </div>
+
+      <div className="form-group">
+        <label className="rated-toggle">
+          <input
+            type="checkbox"
+            checked={rated}
+            onChange={(e) => setRated(e.target.checked)}
+          />
+          <span className="toggle-label">Rated Game</span>
+          <span className="toggle-hint">
+            {rated ? '레이팅에 반영됩니다' : '레이팅에 반영되지 않습니다'}
+          </span>
+        </label>
       </div>
 
       <div className="form-actions">

@@ -18,6 +18,7 @@ type Match struct {
 	BlackPlayerID     uint        `gorm:"not null" json:"black_player_id"`
 	Result            MatchResult `gorm:"not null" json:"result"`
 	PlayedAt          time.Time   `gorm:"not null" json:"played_at"`
+	Rated             bool        `gorm:"default:true" json:"rated"`
 	WhiteRatingBefore float64     `json:"white_rating_before"`
 	BlackRatingBefore float64     `json:"black_rating_before"`
 	WhiteRatingAfter  float64     `json:"white_rating_after"`
@@ -35,6 +36,7 @@ type CreateMatchRequest struct {
 	BlackPlayerID  uint        `json:"black_player_id" binding:"required"`
 	Result         MatchResult `json:"result" binding:"required,oneof=white_win black_win draw"`
 	PlayedAt       time.Time   `json:"played_at" binding:"required"`
+	Rated          *bool       `json:"rated"`
 	ChesscomGameID *string     `json:"chesscom_game_id"`
 }
 

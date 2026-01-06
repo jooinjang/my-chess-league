@@ -5,7 +5,7 @@
 ## 프로젝트 개요
 
 - 사용자 등록 및 관리 (Chess.com 연동 지원)
-- 사용자 간 경기 결과 등록
+- 사용자 간 경기 결과 등록 (Rated/Unrated 선택 가능)
 - Chess.com 경기 자동 가져오기
 - Glicko-1 기반 레이팅 시스템
 - 토너먼트 및 리그 개최/진행/관리 (예정)
@@ -33,19 +33,21 @@
   - 중급자 (800): 주력 오프닝과 전술 개념을 이해
   - 상급자 (1000): 오프닝 이론과 전술에 따른 게임 진행 가능
 - Chess.com 사용자명 유효성 검증
+- 레이팅 초기화는 유저 삭제 후 재등록으로만 가능
 
 ### 경기 관리
 - 수동 경기 결과 등록 (백/흑 플레이어, 결과, 날짜)
+- **Rated/Unrated 게임 선택**: 경기 등록 시 레이팅 반영 여부 선택 가능
 - Chess.com 경기 자동 가져오기:
   - 두 플레이어 선택 후 월별 경기 조회
   - 체크박스로 경기 선택 (전체 선택 가능)
   - 이미 등록된 경기 자동 제외
-  - 선택 경기 일괄 등록
-- 전체 경기 초기화 (Reset All) - 레이팅도 초기값으로 리셋
+  - Rated/Unrated 선택 후 일괄 등록
+- 전체 경기 초기화 (Reset All) - **레이팅은 유지됨**
 
 ### 레이팅 시스템
 - Glicko-1 알고리즘 기반
-- 경기 등록 시 자동 계산
+- Rated 경기만 레이팅에 반영
 - Dashboard에서 순위, 전적(승/무/패), 최근 레이팅 변화 표시
 
 ## 프로젝트 구조
@@ -58,7 +60,7 @@ my-chess-league/
 │   ├── database/               # DB 연결
 │   ├── models/                 # 데이터 모델
 │   │   ├── user.go             # 사용자 모델 (ChesscomUsername 포함)
-│   │   └── match.go            # 경기 모델 (ChesscomGameID 포함)
+│   │   └── match.go            # 경기 모델 (Rated, ChesscomGameID 포함)
 │   ├── handlers/               # API 핸들러
 │   │   ├── user_handler.go
 │   │   ├── match_handler.go
@@ -78,12 +80,14 @@ my-chess-league/
     │   │   ├── matchApi.ts
     │   │   └── chesscomApi.ts
     │   ├── components/
+    │   │   ├── layout/
+    │   │   │   └── Header.tsx      # 상단 네비게이션 (My Chess League)
     │   │   ├── users/
     │   │   │   ├── UserForm.tsx    # 레이팅 카드 선택, Chess.com 검증
     │   │   │   └── UserList.tsx
     │   │   └── matches/
-    │   │       ├── MatchForm.tsx
-    │   │       ├── MatchList.tsx
+    │   │       ├── MatchForm.tsx   # Rated/Unrated 토글 포함
+    │   │       ├── MatchList.tsx   # Unrated 배지 표시
     │   │       └── ChesscomImport.tsx  # Chess.com 경기 가져오기
     │   ├── pages/
     │   │   ├── HomePage.tsx    # Dashboard (랭킹, 전적, 레이팅 변화)
@@ -104,9 +108,9 @@ my-chess-league/
 
 ### Matches
 - `GET /api/v1/matches` - 전체 경기 목록
-- `POST /api/v1/matches` - 경기 등록 (레이팅 자동 계산)
+- `POST /api/v1/matches` - 경기 등록 (rated=true일 때만 레이팅 계산)
 - `POST /api/v1/matches/bulk` - 경기 일괄 등록
-- `DELETE /api/v1/matches` - 전체 경기 삭제 (레이팅 초기화)
+- `DELETE /api/v1/matches` - 전체 경기 삭제 (레이팅 유지)
 - `DELETE /api/v1/matches/:id` - 경기 삭제
 
 ### Chess.com 연동
@@ -157,6 +161,7 @@ npm run dev -- --host
 | black_player_id | uint | 흑 플레이어 FK |
 | result | string | 결과 (white_win/black_win/draw) |
 | played_at | time | 경기 시간 |
+| rated | bool | 레이팅 반영 여부 (기본값: true) |
 | white_rating_before/after | float64 | 백 레이팅 변화 |
 | black_rating_before/after | float64 | 흑 레이팅 변화 |
 | chesscom_game_id | *string | Chess.com 경기 ID (중복 방지용) |
@@ -167,3 +172,4 @@ npm run dev -- --host
 - 백엔드 코드는 `backend/` 디렉토리에 작성
 - API 응답 형식: `{ success: boolean, data?: T, error?: { code, message } }`
 - 삭제는 hard delete 사용 (soft delete X)
+- 경기 삭제 시 레이팅 롤백 없음 (레이팅 초기화는 유저 재등록으로만 가능)
