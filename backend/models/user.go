@@ -11,6 +11,8 @@ type User struct {
 	Name             string         `gorm:"uniqueIndex;not null" json:"name"`
 	Rating           float64        `gorm:"default:1500.0" json:"rating"`
 	RatingDeviation  float64        `gorm:"default:350.0" json:"rating_deviation"`
+	InitialRating    float64        `gorm:"default:1500.0" json:"initial_rating"`
+	InitialRD        float64        `gorm:"default:350.0" json:"initial_rd"`
 	Memo             string         `json:"memo"`
 	ChesscomUsername *string        `gorm:"uniqueIndex" json:"chesscom_username"`
 	CreatedAt        time.Time      `json:"created_at"`

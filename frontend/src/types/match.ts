@@ -8,7 +8,6 @@ export interface Match {
   black_player_id: number;
   result: MatchResult;
   played_at: string;
-  rated: boolean;
   white_rating_before: number;
   black_rating_before: number;
   white_rating_after: number;
@@ -24,7 +23,6 @@ export interface CreateMatchRequest {
   black_player_id: number;
   result: MatchResult;
   played_at: string;
-  rated?: boolean;
   chesscom_game_id?: string;
 }
 
@@ -63,6 +61,18 @@ export interface ChesscomGamesResponse {
     name: string;
     chesscom_username: string;
   };
+}
+
+export interface ChesscomSyncResponse {
+  year: number;
+  month: number;
+  recalculate: boolean;
+  recalculate_done: boolean;
+  users_considered: number;
+  total_fetched: number;
+  total_between_players: number;
+  already_imported: number;
+  created_count: number;
 }
 
 export interface ChesscomUserProfile {

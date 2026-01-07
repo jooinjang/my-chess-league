@@ -122,6 +122,6 @@ func DeleteAllMatches(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, Response{
 		Success: true,
-		Data:    gin.H{"message": "All matches deleted successfully", "deleted_count": count},
+		Data:    gin.H{"message": "All matches deleted successfully (ratings reset to initial values)", "deleted_count": count},
 	})
 }

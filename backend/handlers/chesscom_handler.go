@@ -3,6 +3,8 @@ package handlers
 import (
 	"net/http"
 	"strconv"
+	"strings"
+	"time"
 
 	"my-chess-league/backend/database"
 	"my-chess-league/backend/models"
@@ -167,6 +169,189 @@ func GetChesscomGames(c *gin.Context) {
 				"name":              user2.Name,
 				"chesscom_username": user2.ChesscomUsername,
 			},
+		},
+	})
+}
+
+// SyncChesscomMonth fetches all games between currently registered players for a given year/month,
+// creates missing matches, then recalculates ratings across all matches in chronological order.
+func SyncChesscomMonth(c *gin.Context) {
+	yearStr := c.Query("year")
+	monthStr := c.Query("month")
+
+	year, err := strconv.Atoi(yearStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, Response{
+			Success: false,
+			Error:   &ErrorInfo{Code: "INVALID_YEAR", Message: "Invalid year"},
+		})
+		return
+	}
+	month, err := strconv.Atoi(monthStr)
+	if err != nil || month < 1 || month > 12 {
+		c.JSON(http.StatusBadRequest, Response{
+			Success: false,
+			Error:   &ErrorInfo{Code: "INVALID_MONTH", Message: "Invalid month (1-12)"},
+		})
+		return
+	}
+
+	// Optional flag
+	recalculate := true
+	if v := strings.TrimSpace(c.Query("recalculate")); v != "" {
+		v = strings.ToLower(v)
+		recalculate = !(v == "false" || v == "0" || v == "no")
+	}
+
+	// Load users with Chess.com usernames
+	var users []models.User
+	if err := database.DB.Where("chesscom_username IS NOT NULL AND chesscom_username != ''").Find(&users).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, Response{
+			Success: false,
+			Error:   &ErrorInfo{Code: "DB_ERROR", Message: err.Error()},
+		})
+		return
+	}
+	if len(users) < 2 {
+		c.JSON(http.StatusBadRequest, Response{
+			Success: false,
+			Error:   &ErrorInfo{Code: "NOT_ENOUGH_USERS", Message: "At least 2 users with Chess.com usernames are required"},
+		})
+		return
+	}
+
+	// Map chess.com username -> user
+	userByChesscom := make(map[string]models.User, len(users))
+	for _, u := range users {
+		if u.ChesscomUsername == nil {
+			continue
+		}
+		name := strings.ToLower(strings.TrimSpace(*u.ChesscomUsername))
+		if name == "" {
+			continue
+		}
+		userByChesscom[name] = u
+	}
+
+	// Fetch monthly games for each user and keep only games between registered users
+	type gameWrap struct {
+		Game services.ChesscomGame
+	}
+	gamesByID := make(map[string]services.ChesscomGame)
+	totalFetched := 0
+
+	for _, u := range users {
+		if u.ChesscomUsername == nil || strings.TrimSpace(*u.ChesscomUsername) == "" {
+			continue
+		}
+		username := strings.TrimSpace(*u.ChesscomUsername)
+		userGames, err := chesscomService.GetMonthlyGames(username, year, month)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, Response{
+				Success: false,
+				Error:   &ErrorInfo{Code: "CHESSCOM_API_ERROR", Message: err.Error()},
+			})
+			return
+		}
+		totalFetched += len(userGames)
+
+		for _, g := range userGames {
+			if g.GameID == "" {
+				continue
+			}
+			whiteLower := strings.ToLower(g.White.Username)
+			blackLower := strings.ToLower(g.Black.Username)
+			if _, ok := userByChesscom[whiteLower]; !ok {
+				continue
+			}
+			if _, ok := userByChesscom[blackLower]; !ok {
+				continue
+			}
+			// Deduplicate (same game appears in both players' archives)
+			gamesByID[g.GameID] = g
+		}
+	}
+
+	// Determine which games already exist in DB
+	gameIDs := make([]string, 0, len(gamesByID))
+	for id := range gamesByID {
+		gameIDs = append(gameIDs, id)
+	}
+
+	alreadyImportedSet := make(map[string]struct{})
+	if len(gameIDs) > 0 {
+		var existingMatches []models.Match
+		database.DB.Where("chesscom_game_id IN ?", gameIDs).Find(&existingMatches)
+		for _, m := range existingMatches {
+			if m.ChesscomGameID != nil {
+				alreadyImportedSet[*m.ChesscomGameID] = struct{}{}
+			}
+		}
+	}
+
+	// Build bulk create requests for missing games
+	matchesToCreate := make([]models.CreateMatchRequest, 0)
+	for gameID, g := range gamesByID {
+		if _, exists := alreadyImportedSet[gameID]; exists {
+			continue
+		}
+
+		whiteUser := userByChesscom[strings.ToLower(g.White.Username)]
+		blackUser := userByChesscom[strings.ToLower(g.Black.Username)]
+
+		result := services.ConvertResultToMatchResult(g.White.Result, g.Black.Result)
+		playedAt := time.Unix(g.EndTime, 0).UTC()
+		gameIDCopy := gameID
+
+		matchesToCreate = append(matchesToCreate, models.CreateMatchRequest{
+			WhitePlayerID:  whiteUser.ID,
+			BlackPlayerID:  blackUser.ID,
+			Result:         models.MatchResult(result),
+			PlayedAt:       playedAt,
+			ChesscomGameID: &gameIDCopy,
+		})
+	}
+
+	createdCount := 0
+	if len(matchesToCreate) > 0 {
+		created, err := matchService.CreateMatchBulk(&models.BulkCreateMatchRequest{Matches: matchesToCreate})
+		if err != nil {
+			c.JSON(http.StatusBadRequest, Response{
+				Success: false,
+				Error:   &ErrorInfo{Code: "CREATE_ERROR", Message: err.Error()},
+				Data: gin.H{
+					"created_count": len(created),
+				},
+			})
+			return
+		}
+		createdCount = len(created)
+	}
+
+	recalcDone := false
+	if recalculate {
+		if err := matchService.RecalculateAllRatings(); err != nil {
+			c.JSON(http.StatusInternalServerError, Response{
+				Success: false,
+				Error:   &ErrorInfo{Code: "RECALCULATE_ERROR", Message: err.Error()},
+			})
+			return
+		}
+		recalcDone = true
+	}
+
+	c.JSON(http.StatusOK, Response{
+		Success: true,
+		Data: gin.H{
+			"year":                 year,
+			"month":                month,
+			"recalculate":           recalculate,
+			"recalculate_done":      recalcDone,
+			"users_considered":      len(userByChesscom),
+			"total_fetched":         totalFetched,
+			"total_between_players": len(gamesByID),
+			"already_imported":      len(alreadyImportedSet),
+			"created_count":         createdCount,
 		},
 	})
 }

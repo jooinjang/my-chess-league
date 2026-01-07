@@ -1,5 +1,5 @@
 import { apiClient } from './client';
-import { ApiResponse, ChesscomGamesResponse, ChesscomUserProfile } from '../types';
+import { ApiResponse, ChesscomGamesResponse, ChesscomSyncResponse, ChesscomUserProfile } from '../types';
 
 export const chesscomApi = {
   validateUsername: async (username: string): Promise<ChesscomUserProfile> => {
@@ -25,6 +25,19 @@ export const chesscomApi = {
           month,
         },
       }
+    );
+    return response.data.data!;
+  },
+
+  syncMonth: async (params: {
+    year: number;
+    month: number;
+    recalculate?: boolean;
+  }): Promise<ChesscomSyncResponse> => {
+    const response = await apiClient.post<ApiResponse<ChesscomSyncResponse>>(
+      `/chesscom/sync`,
+      null,
+      { params }
     );
     return response.data.data!;
   },

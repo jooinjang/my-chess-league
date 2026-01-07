@@ -3,6 +3,8 @@ export interface User {
   name: string;
   rating: number;
   rating_deviation: number;
+  initial_rating?: number;
+  initial_rd?: number;
   memo: string;
   chesscom_username?: string;
   created_at: string;

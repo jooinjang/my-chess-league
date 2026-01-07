@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { User, Match, CreateMatchRequest } from '../types';
 import { userApi, matchApi } from '../api';
-import { MatchList, MatchForm, ChesscomImport } from '../components/matches';
+import { MatchList, MatchForm, ChesscomImport, ChesscomSync } from '../components/matches';
 import './MatchesPage.css';
 
 export function MatchesPage() {
@@ -10,6 +10,7 @@ export function MatchesPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [showChesscomImport, setShowChesscomImport] = useState(false);
+  const [showChesscomSync, setShowChesscomSync] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -50,8 +51,13 @@ export function MatchesPage() {
     loadData();
   };
 
+  const handleChesscomSyncComplete = () => {
+    setShowChesscomSync(false);
+    loadData();
+  };
+
   const handleDeleteAllMatches = async () => {
-    if (!window.confirm('Are you sure you want to delete ALL matches? This action cannot be undone. (Ratings will NOT be reset)')) {
+    if (!window.confirm('Are you sure you want to delete ALL matches? This action cannot be undone. (Ratings WILL be reset to each user’s initial values)')) {
       return;
     }
 
@@ -74,7 +80,7 @@ export function MatchesPage() {
     <div className="matches-page">
       <div className="page-header">
         <h1>Matches</h1>
-        {!showForm && !showChesscomImport && (
+        {!showForm && !showChesscomImport && !showChesscomSync && (
           <div className="header-buttons">
             {matches.length > 0 && (
               <button
@@ -85,12 +91,20 @@ export function MatchesPage() {
               </button>
             )}
             {hasChesscomUsers && (
-              <button
-                className="btn-import"
-                onClick={() => setShowChesscomImport(true)}
-              >
-                Import from Chess.com
-              </button>
+              <>
+                <button
+                  className="btn-sync"
+                  onClick={() => setShowChesscomSync(true)}
+                >
+                  Import All Matches
+                </button>
+                <button
+                  className="btn-import"
+                  onClick={() => setShowChesscomImport(true)}
+                >
+                  Import from Chess.com
+                </button>
+              </>
             )}
             <button
               className="btn-add"
@@ -114,6 +128,13 @@ export function MatchesPage() {
           users={users}
           onComplete={handleChesscomImportComplete}
           onCancel={() => setShowChesscomImport(false)}
+        />
+      )}
+
+      {showChesscomSync && (
+        <ChesscomSync
+          onComplete={handleChesscomSyncComplete}
+          onCancel={() => setShowChesscomSync(false)}
         />
       )}
 

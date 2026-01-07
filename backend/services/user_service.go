@@ -33,12 +33,16 @@ func (s *UserService) CreateUser(req *models.CreateUserRequest) (*models.User, e
 		ChesscomUsername: req.ChesscomUsername,
 	}
 
+	// 등록 시 초기 레이팅을 별도로 저장하고, 현재 레이팅도 그 값으로 시작
 	if req.Rating != nil {
-		user.Rating = *req.Rating
+		user.InitialRating = *req.Rating
 	} else {
-		user.Rating = InitialRating
+		user.InitialRating = InitialRating
 	}
-	user.RatingDeviation = InitialRD
+	user.InitialRD = InitialRD
+
+	user.Rating = user.InitialRating
+	user.RatingDeviation = user.InitialRD
 
 	result := database.DB.Create(&user)
 	if result.Error != nil {

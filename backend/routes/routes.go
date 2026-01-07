@@ -16,6 +16,12 @@ func SetupRouter() *gin.Engine {
 	// API v1 group
 	v1 := router.Group("/api/v1")
 	{
+		// Google Chat integration (outgoing webhook)
+		googlechat := v1.Group("/googlechat")
+		{
+			googlechat.POST("/send", handlers.GoogleChatSend)
+		}
+
 		// Users
 		users := v1.Group("/users")
 		{
@@ -43,6 +49,7 @@ func SetupRouter() *gin.Engine {
 		{
 			chesscom.GET("/validate/:username", handlers.ValidateChesscomUsername)
 			chesscom.GET("/games", handlers.GetChesscomGames)
+			chesscom.POST("/sync", handlers.SyncChesscomMonth)
 		}
 
 		// Rankings
