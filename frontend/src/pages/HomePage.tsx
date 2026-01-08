@@ -50,6 +50,27 @@ function calculateUserStats(userId: number, matches: Match[]): UserStats {
   return { wins, draws, losses, lastRatingChange };
 }
 
+function calculateWinStreak(userId: number, matches: Match[]): number {
+  // matches are sorted by played_at DESC
+  const userMatches = matches.filter(
+    (m) => m.white_player_id === userId || m.black_player_id === userId
+  );
+
+  let streak = 0;
+  for (const match of userMatches) {
+    if (match.result === 'draw') break;
+
+    const isWhite = match.white_player_id === userId;
+    const isWin =
+      (isWhite && match.result === 'white_win') ||
+      (!isWhite && match.result === 'black_win');
+
+    if (!isWin) break;
+    streak++;
+  }
+  return streak;
+}
+
 export function HomePage() {
   const [rankings, setRankings] = useState<User[]>([]);
   const [allMatches, setAllMatches] = useState<Match[]>([]);
@@ -93,12 +114,30 @@ export function HomePage() {
             <div className="rankings-list">
               {rankings.map((user, index) => {
                 const stats = calculateUserStats(user.id, allMatches);
+                const streak = calculateWinStreak(user.id, allMatches);
                 return (
                   <div key={user.id} className="ranking-item">
                     <span className="rank">#{index + 1}</span>
                     <div className="player-info">
                       <div className="player-main">
                         <span className="name">{user.name}</span>
+                        {streak >= 2 && (
+                          <span className="streak" title={`연승 ${streak}`}>
+                            <svg
+                              className="streak-icon"
+                              width="12"
+                              height="12"
+                              viewBox="0 0 24 24"
+                              aria-hidden="true"
+                            >
+                              <path
+                                fill="currentColor"
+                                d="M13.5 2.1c.2 2.6-.9 4.2-2.2 5.7-1.2 1.5-2.5 2.9-2.5 5.2 0 2.8 2.1 4.9 4.9 4.9 2.7 0 4.8-2.1 4.8-4.9 0-2.2-1.1-3.6-2.1-4.9-.9-1.1-1.7-2.2-1.9-4zM12 22c-4.4 0-8-3.6-8-8 0-3.3 1.9-5.4 3.4-7.1C9 5.1 10.1 3.8 10.1 2h1.8c0 2.6-1.2 4.2-2.6 5.8C7.9 9.5 6 11.2 6 14c0 3.3 2.7 6 6 6s6-2.7 6-6c0-2.6-1.3-4.1-2.4-5.5-.9-1.1-1.7-2.2-1.9-3.8h1.8c.2 1 .8 1.8 1.6 2.9 1.3 1.6 2.9 3.6 2.9 6.4 0 4.4-3.6 8-8 8z"
+                              />
+                            </svg>
+                            <span className="streak-num">{streak}</span>
+                          </span>
+                        )}
                         <span className="record">
                           ({stats.wins}/{stats.draws}/{stats.losses})
                         </span>

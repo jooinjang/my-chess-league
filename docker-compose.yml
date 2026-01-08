@@ -7,7 +7,7 @@ services:
       HOST: 0.0.0.0
       PORT: 8080
       DB_PATH: /data/chess_league.db
-      GOOGLE_CHAT_WEBHOOK_URL: https://chat.googleapis.com/v1/spaces/AAQAyuxnT6U/messages\?key\=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI\&token\=GKTT6OUtQdxDpCzEHalxSJPhWD_tR7bGeJsiA17N32I
+      GOOGLE_CHAT_WEBHOOK_URL: https://chat.googleapis.com/v1/spaces/AAQA2KZ970A/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=KicLFkX1Zt6LS_5Qeysg8cpubieGRioGSEse3_mY_wA
     volumes:
       - backend_data:/data
       # 로컬의 기존 DB를 그대로 쓰고 싶으면 위 volume 대신 아래 바인드 마운트를 사용하세요.

@@ -44,6 +44,33 @@ func SetupRouter() *gin.Engine {
 			matches.DELETE("/:id", handlers.DeleteMatch)
 		}
 
+		// Leagues
+		leagues := v1.Group("/leagues")
+		{
+			leagues.GET("", handlers.GetLeagues)
+			leagues.GET("/:id", handlers.GetLeague)
+			leagues.POST("", handlers.CreateLeague)
+			leagues.PUT("/:id", handlers.UpdateLeague)
+			leagues.DELETE("/:id", handlers.DeleteLeague)
+			leagues.GET("/:id/pairings", handlers.GetLeaguePairings)
+			leagues.POST("/:id/rounds/next", handlers.GenerateNextLeagueRound)
+			leagues.GET("/:id/rounds/:roundNo", handlers.GetLeagueRound)
+			leagues.GET("/:id/standings", handlers.GetLeagueStandings)
+			leagues.POST("/:id/pairings/:pairingId/result/chesscom", handlers.ReportLeaguePairingChesscom)
+		}
+
+		// Tournaments
+		tournaments := v1.Group("/tournaments")
+		{
+			tournaments.GET("", handlers.GetTournaments)
+			tournaments.GET("/:id", handlers.GetTournament)
+			tournaments.POST("", handlers.CreateTournament)
+			tournaments.DELETE("/:id", handlers.DeleteTournament)
+			tournaments.GET("/:id/bracket", handlers.GetTournamentBracket)
+			tournaments.POST("/:id/rounds/next", handlers.GenerateNextTournamentRound)
+			tournaments.POST("/:id/matches/:matchId/result/chesscom", handlers.ReportTournamentMatchChesscom)
+		}
+
 		// Chess.com integration
 		chesscom := v1.Group("/chesscom")
 		{

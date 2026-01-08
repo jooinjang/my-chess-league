@@ -1,0 +1,171 @@
+.tournament-detail .sub {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.tournament-detail .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.tournament-detail h1 {
+  color: #fff;
+  margin: 0;
+}
+
+.btn-secondary-link {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid #2a2a40;
+  text-decoration: none;
+  color: #fff;
+  background: transparent;
+}
+
+.card {
+  background: #1a1a2e;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+
+.card h3 {
+  color: #fff;
+  margin: 0 0 1rem 0;
+}
+
+.participants {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 8px;
+}
+
+.participant {
+  border: 1px solid #2a2a40;
+  border-radius: 10px;
+  padding: 10px;
+  background: #16213e;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.participant.eliminated {
+  opacity: 0.7;
+}
+
+.participant .name {
+  color: #fff;
+  font-weight: 600;
+}
+
+.participant .record {
+  color: #a0a0a0;
+  font-size: 12px;
+}
+
+.badge {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid #ff4a4a;
+  background: #ff4a4a20;
+  color: #ff4a4a;
+}
+
+.round-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.picker-wrap {
+  margin: 12px 0;
+}
+
+.round {
+  margin-top: 12px;
+}
+
+.round-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #fff;
+}
+
+.match-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.match {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid #2a2a40;
+  border-radius: 8px;
+  padding: 12px;
+  background: #16213e;
+}
+
+.match.done {
+  background: rgba(22, 33, 62, 0.6);
+}
+
+.players .vs {
+  margin: 0 8px;
+  color: #6b7280;
+}
+
+.meta {
+  margin-top: 6px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid #2a2a40;
+  background: rgba(15, 15, 26, 0.35);
+  color: #a0a0a0;
+}
+
+.btn-primary {
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: none;
+  background: #4a9eff;
+  color: #fff;
+}
+
+.done {
+  color: #059669;
+  font-weight: 600;
+}
+
+.hint {
+  color: #a0a0a0;
+}
+
+.error-message {
+  margin: 12px 0;
+  background: #ff4a4a20;
+  color: #ff4a4a;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+

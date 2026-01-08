@@ -1,12 +1,11 @@
 package handlers
 
 import (
-	"bytes"
-	"encoding/json"
 	"net/http"
 	"strings"
 
 	"my-chess-league/backend/config"
+	"my-chess-league/backend/services"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,6 +13,8 @@ import (
 type googleChatSendRequest struct {
 	Text string `json:"text"`
 }
+
+var googleChatService = services.NewGoogleChatService()
 
 // GoogleChatSend sends a message to a Google Chat space using an Incoming Webhook URL.
 // Route: POST /api/v1/googlechat/send
@@ -38,27 +39,10 @@ func GoogleChatSend(c *gin.Context) {
 		return
 	}
 
-	payload, _ := json.Marshal(gin.H{"text": req.Text})
-	httpReq, err := http.NewRequest(http.MethodPost, cfg.GoogleChatWebhookURL, bytes.NewReader(payload))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create request"})
-		return
-	}
-	httpReq.Header.Set("Content-Type", "application/json; charset=UTF-8")
-
-	resp, err := http.DefaultClient.Do(httpReq)
-	if err != nil {
-		c.JSON(http.StatusBadGateway, gin.H{"error": "Failed to send webhook"})
-		return
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		c.JSON(http.StatusBadGateway, gin.H{"error": "Webhook returned non-2xx", "status": resp.StatusCode})
+	if err := googleChatService.Send(req.Text); err != nil {
+		c.JSON(http.StatusBadGateway, gin.H{"error": "Failed to send webhook", "message": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"success": true})
 }
-
-

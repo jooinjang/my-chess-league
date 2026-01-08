@@ -70,6 +70,30 @@
   gap: 0.5rem;
 }
 
+.ranking-item .streak {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #a0a0a0;
+  font-size: 0.75rem;
+  border: 1px solid #333;
+  background: rgba(15, 15, 26, 0.35);
+  padding: 2px 8px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.ranking-item .streak-icon {
+  color: #a0a0a0;
+  opacity: 0.9;
+}
+
+.ranking-item .streak-num {
+  font-family: monospace;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
 .ranking-item .name {
   color: #fff;
   font-weight: 500;

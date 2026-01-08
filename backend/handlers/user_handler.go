@@ -1,8 +1,10 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"my-chess-league/backend/models"
 	"my-chess-league/backend/services"
@@ -75,6 +77,22 @@ func CreateUser(c *gin.Context) {
 		})
 		return
 	}
+
+	// Best-effort: notify Google Chat about new player registration
+	go func(name string, chesscomUsername *string) {
+		display := strings.TrimSpace(name)
+		if chesscomUsername != nil {
+			cc := strings.TrimSpace(*chesscomUsername)
+			if cc != "" {
+				display = display + "(@" + cc + ")"
+			}
+		}
+		msg := "새로운 플레이어 " + display + "가 참가했습니다!"
+		if err := googleChatService.Send(msg); err != nil {
+			log.Printf("google chat notify failed: %v\n", err)
+		}
+	}(user.Name, user.ChesscomUsername)
+
 	c.JSON(http.StatusCreated, Response{Success: true, Data: user})
 }
 

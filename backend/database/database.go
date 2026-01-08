@@ -51,7 +51,16 @@ func InitDB() {
 	}
 
 	// Auto migrate schemas
-	err = DB.AutoMigrate(&models.User{}, &models.Match{})
+	err = DB.AutoMigrate(
+		&models.User{},
+		&models.Match{},
+		&models.League{},
+		&models.LeagueParticipant{},
+		&models.LeaguePairing{},
+		&models.Tournament{},
+		&models.TournamentParticipant{},
+		&models.TournamentMatch{},
+	)
 	if err != nil {
 		log.Fatal("Failed to migrate database:", err)
 	}
