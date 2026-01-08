@@ -99,7 +99,7 @@ export function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
       if (isEditMode) {
         await onSubmit({
           name: name.trim(),
-          memo: memo.trim() || undefined,
+          memo: memo.trim(),  // 빈 문자열도 명시적으로 전송
           chesscom_username: chesscomUsername.trim() || undefined,
         } as UpdateUserRequest);
       } else {

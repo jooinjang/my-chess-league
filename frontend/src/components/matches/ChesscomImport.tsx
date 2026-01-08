@@ -5,7 +5,7 @@ import './ChesscomImport.css';
 
 interface ChesscomImportProps {
   users: User[];
-  onComplete: () => void;
+  onComplete: (count?: number) => void;
   onCancel: () => void;
 }
 
@@ -138,7 +138,7 @@ export function ChesscomImport({ users, onComplete, onCancel }: ChesscomImportPr
       });
 
       await matchApi.createBulk({ matches });
-      onComplete();
+      onComplete(matches.length);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to import matches');
     } finally {

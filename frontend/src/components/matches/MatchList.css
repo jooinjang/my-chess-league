@@ -120,7 +120,108 @@
 .empty-state {
   text-align: center;
   padding: 3rem;
-  color: #a0a0a0;
-  background: #1a1a2e;
-  border-radius: 8px;
+  color: var(--color-text-secondary);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+}
+
+/* Mobile Card Layout */
+@media (max-width: 768px) {
+  .match-list table {
+    display: block;
+  }
+
+  .match-list thead {
+    display: none;
+  }
+
+  .match-list tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .match-list tr {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg-tertiary);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  .match-list tr:hover td {
+    background: transparent;
+  }
+
+  .match-list td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+    border-bottom: none;
+  }
+
+  .match-list .date {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    order: -1;
+  }
+
+  .match-list .player {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+
+  .match-list .player .name {
+    font-size: 1rem;
+  }
+
+  .match-list .player .rating {
+    font-size: 0.875rem;
+  }
+
+  .match-list .result {
+    font-size: 1.5rem;
+    text-align: center;
+    padding: 0.5rem 0;
+  }
+
+  .match-list .rating-change {
+    justify-content: center;
+    font-size: 0.875rem;
+  }
+
+  .match-list .actions {
+    justify-content: stretch;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .match-list .btn-delete {
+    flex: 1;
+    text-align: center;
+  }
+
+  /* Match card mobile layout */
+  .match-list .match-players {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .match-list .player.white,
+  .match-list .player.black {
+    flex: 1;
+  }
+
+  .match-list .player.white {
+    text-align: left;
+  }
+
+  .match-list .player.black {
+    text-align: right;
+    flex-direction: row-reverse;
+  }
 }

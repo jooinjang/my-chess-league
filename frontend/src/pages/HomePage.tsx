@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { User, Match } from '../types';
 import { userApi, matchApi } from '../api';
+import { SkeletonRanking, Skeleton } from '../components/common';
 import './HomePage.css';
 
 interface UserStats {
@@ -98,7 +99,28 @@ export function HomePage() {
   };
 
   if (loading) {
-    return <div className="loading">Loading...</div>;
+    return (
+      <div className="home-page">
+        <h1>Dashboard</h1>
+        <div className="dashboard-grid">
+          <section className="rankings-section">
+            <h2>Top Rankings</h2>
+            <SkeletonRanking count={5} />
+          </section>
+          <section className="matches-section">
+            <h2>Recent Matches</h2>
+            <div className="matches-list">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="match-item skeleton-match">
+                  <Skeleton width="40%" height="1rem" />
+                  <Skeleton width="3rem" height="1.25rem" />
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+      </div>
+    );
   }
 
   return (

@@ -28,12 +28,12 @@ export function UserList({ users, onEdit, onDelete }: UserListProps) {
         <tbody>
           {users.map((user, index) => (
             <tr key={user.id}>
-              <td className="rank">#{index + 1}</td>
-              <td className="name">{user.name}</td>
-              <td className="rating">{Math.round(user.rating)}</td>
-              <td className="rd">{Math.round(user.rating_deviation)}</td>
-              <td className="memo">{user.memo || '-'}</td>
-              <td className="actions">
+              <td className="rank" data-label="Rank">#{index + 1}</td>
+              <td className="name" data-label="Name">{user.name}</td>
+              <td className="rating" data-label="Rating">{Math.round(user.rating)}</td>
+              <td className="rd" data-label="RD">{Math.round(user.rating_deviation)}</td>
+              <td className="memo" data-label="Memo">{user.memo || '-'}</td>
+              <td className="actions" data-label="">
                 <button
                   className="btn-edit"
                   onClick={() => onEdit(user)}

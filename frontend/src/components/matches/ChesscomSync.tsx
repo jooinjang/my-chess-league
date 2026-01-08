@@ -4,7 +4,7 @@ import { ChesscomSyncResponse } from '../../types';
 import './ChesscomSync.css';
 
 interface ChesscomSyncProps {
-  onComplete: () => void;
+  onComplete: (count?: number) => void;
   onCancel: () => void;
 }
 
@@ -44,7 +44,7 @@ export function ChesscomSync({ onComplete, onCancel }: ChesscomSyncProps) {
         recalculate,
       });
       setResult(data);
-      onComplete();
+      onComplete(data.created_count);
     } catch (err) {
       setError(err instanceof Error ? err.message : '동기화에 실패했습니다');
     } finally {

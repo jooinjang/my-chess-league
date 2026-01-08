@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { User, Match, CreateMatchRequest } from '../types';
 import { userApi, matchApi } from '../api';
 import { MatchList, MatchForm, ChesscomImport, ChesscomSync } from '../components/matches';
+import { useToast, SkeletonTable } from '../components/common';
 import './MatchesPage.css';
 
 export function MatchesPage() {
@@ -11,6 +12,7 @@ export function MatchesPage() {
   const [showForm, setShowForm] = useState(false);
   const [showChesscomImport, setShowChesscomImport] = useState(false);
   const [showChesscomSync, setShowChesscomSync] = useState(false);
+  const { showToast } = useToast();
 
   useEffect(() => {
     loadData();
@@ -26,46 +28,63 @@ export function MatchesPage() {
       setUsers(usersData);
     } catch (error) {
       console.error('Failed to load data:', error);
+      showToast('Failed to load data', 'error');
     } finally {
       setLoading(false);
     }
   };
 
   const handleCreateMatch = async (data: CreateMatchRequest) => {
-    await matchApi.create(data);
-    setShowForm(false);
-    loadData();
+    try {
+      await matchApi.create(data);
+      setShowForm(false);
+      showToast('Match recorded successfully', 'success');
+      loadData();
+    } catch (error) {
+      console.error('Failed to create match:', error);
+      showToast('Failed to record match', 'error');
+    }
   };
 
   const handleDeleteMatch = async (id: number) => {
     try {
       await matchApi.delete(id);
+      showToast('Match deleted successfully', 'success');
       loadData();
     } catch (error) {
       console.error('Failed to delete match:', error);
+      showToast('Failed to delete match', 'error');
     }
   };
 
-  const handleChesscomImportComplete = () => {
+  const handleChesscomImportComplete = (count?: number) => {
     setShowChesscomImport(false);
+    if (count !== undefined && count > 0) {
+      showToast(`${count} matches imported successfully`, 'success');
+    }
     loadData();
   };
 
-  const handleChesscomSyncComplete = () => {
+  const handleChesscomSyncComplete = (count?: number) => {
     setShowChesscomSync(false);
+    if (count !== undefined && count > 0) {
+      showToast(`${count} matches synced successfully`, 'success');
+    }
     loadData();
   };
 
   const handleDeleteAllMatches = async () => {
-    if (!window.confirm('Are you sure you want to delete ALL matches? This action cannot be undone. (Ratings WILL be reset to each user’s initial values)')) {
+    if (!window.confirm('Are you sure you want to delete ALL matches? This action cannot be undone. (Ratings WILL be reset to each user\'s initial values)')) {
       return;
     }
 
     try {
       await matchApi.deleteAll();
+      showToast('All matches deleted and ratings reset', 'success');
       loadData();
     } catch (error) {
       console.error('Failed to delete all matches:', error);
+      showToast('Failed to delete matches', 'error');
     }
   };
 
@@ -73,7 +92,14 @@ export function MatchesPage() {
   const hasChesscomUsers = users.filter(u => u.chesscom_username).length >= 2;
 
   if (loading) {
-    return <div className="loading">Loading...</div>;
+    return (
+      <div className="matches-page">
+        <div className="page-header">
+          <h1>Matches</h1>
+        </div>
+        <SkeletonTable rows={5} columns={5} />
+      </div>
+    );
   }
 
   return (

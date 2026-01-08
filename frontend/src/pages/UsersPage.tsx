@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { User, CreateUserRequest, UpdateUserRequest } from '../types';
 import { userApi } from '../api';
 import { UserList, UserForm } from '../components/users';
+import { useToast, SkeletonTable } from '../components/common';
 import './UsersPage.css';
 
 type FormMode = 'none' | 'create' | 'edit';
@@ -11,6 +12,7 @@ export function UsersPage() {
   const [loading, setLoading] = useState(true);
   const [formMode, setFormMode] = useState<FormMode>('none');
   const [editingUser, setEditingUser] = useState<User | undefined>(undefined);
+  const { showToast } = useToast();
 
   useEffect(() => {
     loadUsers();
@@ -22,23 +24,36 @@ export function UsersPage() {
       setUsers(data);
     } catch (error) {
       console.error('Failed to load users:', error);
+      showToast('Failed to load users', 'error');
     } finally {
       setLoading(false);
     }
   };
 
   const handleCreateUser = async (data: CreateUserRequest | UpdateUserRequest) => {
-    await userApi.create(data as CreateUserRequest);
-    setFormMode('none');
-    loadUsers();
+    try {
+      await userApi.create(data as CreateUserRequest);
+      setFormMode('none');
+      showToast('User created successfully', 'success');
+      loadUsers();
+    } catch (error) {
+      console.error('Failed to create user:', error);
+      showToast('Failed to create user', 'error');
+    }
   };
 
   const handleUpdateUser = async (data: CreateUserRequest | UpdateUserRequest) => {
     if (editingUser) {
-      await userApi.update(editingUser.id, data as UpdateUserRequest);
-      setFormMode('none');
-      setEditingUser(undefined);
-      loadUsers();
+      try {
+        await userApi.update(editingUser.id, data as UpdateUserRequest);
+        setFormMode('none');
+        setEditingUser(undefined);
+        showToast('User updated successfully', 'success');
+        loadUsers();
+      } catch (error) {
+        console.error('Failed to update user:', error);
+        showToast('Failed to update user', 'error');
+      }
     }
   };
 
@@ -50,9 +65,11 @@ export function UsersPage() {
   const handleDeleteUser = async (id: number) => {
     try {
       await userApi.delete(id);
+      showToast('User deleted successfully', 'success');
       loadUsers();
     } catch (error) {
       console.error('Failed to delete user:', error);
+      showToast('Failed to delete user', 'error');
     }
   };
 
@@ -62,7 +79,14 @@ export function UsersPage() {
   };
 
   if (loading) {
-    return <div className="loading">Loading...</div>;
+    return (
+      <div className="users-page">
+        <div className="page-header">
+          <h1>Users</h1>
+        </div>
+        <SkeletonTable rows={5} columns={5} />
+      </div>
+    );
   }
 
   return (
