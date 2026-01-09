@@ -31,9 +31,9 @@ function getResultDisplay(result: string) {
 
 function getRatingChange(before: number, after: number) {
   const change = Math.round(after - before);
-  if (change > 0) return { text: `+${change}`, class: 'positive' };
-  if (change < 0) return { text: `${change}`, class: 'negative' };
-  return { text: '0', class: 'neutral' };
+  if (change > 0) return { text: `+${change}`, class: 'positive', ariaLabel: `increased by ${change}` };
+  if (change < 0) return { text: `${change}`, class: 'negative', ariaLabel: `decreased by ${Math.abs(change)}` };
+  return { text: '0', class: 'neutral', ariaLabel: 'no change' };
 }
 
 export function MatchList({ matches, onDelete }: MatchListProps) {
@@ -46,12 +46,12 @@ export function MatchList({ matches, onDelete }: MatchListProps) {
       <table>
         <thead>
           <tr>
-            <th>Date</th>
-            <th>White</th>
-            <th>Result</th>
-            <th>Black</th>
-            <th>Rating Change</th>
-            <th>Actions</th>
+            <th scope="col">Date</th>
+            <th scope="col">White</th>
+            <th scope="col">Result</th>
+            <th scope="col">Black</th>
+            <th scope="col">Rating Change</th>
+            <th scope="col">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -75,9 +75,15 @@ export function MatchList({ matches, onDelete }: MatchListProps) {
                   <span className="rating">({Math.round(match.black_rating_before)})</span>
                 </td>
                 <td className="rating-change">
-                  <span className={whiteChange.class}>{whiteChange.text}</span>
-                  <span className="separator">/</span>
-                  <span className={blackChange.class}>{blackChange.text}</span>
+                  <span className={whiteChange.class} aria-label={`White ${whiteChange.ariaLabel}`}>
+                    <span className="change-icon" aria-hidden="true">{whiteChange.class === 'positive' ? '▲' : whiteChange.class === 'negative' ? '▼' : '–'}</span>
+                    {whiteChange.text}
+                  </span>
+                  <span className="separator" aria-hidden="true">/</span>
+                  <span className={blackChange.class} aria-label={`Black ${blackChange.ariaLabel}`}>
+                    <span className="change-icon" aria-hidden="true">{blackChange.class === 'positive' ? '▲' : blackChange.class === 'negative' ? '▼' : '–'}</span>
+                    {blackChange.text}
+                  </span>
                 </td>
                 <td className="actions">
                   <button
@@ -87,6 +93,7 @@ export function MatchList({ matches, onDelete }: MatchListProps) {
                         onDelete(match.id);
                       }
                     }}
+                    aria-label={`Delete match between ${match.white_player?.name || 'Unknown'} and ${match.black_player?.name || 'Unknown'}`}
                   >
                     Delete
                   </button>

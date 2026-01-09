@@ -3,6 +3,7 @@
   padding: 1.5rem;
   border-radius: 8px;
   margin-bottom: 1.5rem;
+  animation: fadeIn var(--transition-slow) ease-out;
 }
 
 .match-form h3 {
@@ -10,39 +11,7 @@
   color: #fff;
 }
 
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.form-group {
-  margin-bottom: 1rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #a0a0a0;
-  font-size: 0.875rem;
-}
-
-.form-group select,
-.form-group input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #333;
-  border-radius: 4px;
-  background: #0f0f1a;
-  color: #fff;
-  font-size: 1rem;
-}
-
-.form-group select:focus,
-.form-group input:focus {
-  outline: none;
-  border-color: #4a9eff;
-}
+/* form-row, form-group base styles are in index.css */
 
 .result-options {
   display: flex;
@@ -56,7 +25,7 @@
   border-radius: 4px;
   text-align: center;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all var(--transition-normal);
   color: #a0a0a0;
 }
 
@@ -67,6 +36,7 @@
 .result-option:hover {
   border-color: #4a9eff;
   color: #fff;
+  transform: translateY(-2px);
 }
 
 .result-option.selected {
@@ -75,54 +45,4 @@
   color: #fff;
 }
 
-.form-actions {
-  display: flex;
-  gap: 0.75rem;
-  justify-content: flex-end;
-  margin-top: 1.5rem;
-}
-
-.btn-primary,
-.btn-secondary {
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.btn-primary {
-  background: #4a9eff;
-  color: #fff;
-  border: none;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background: #3a8eef;
-}
-
-.btn-primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.btn-secondary {
-  background: transparent;
-  color: #a0a0a0;
-  border: 1px solid #333;
-}
-
-.btn-secondary:hover {
-  background: #333;
-  color: #fff;
-}
-
-.error-message {
-  background: #ff4a4a20;
-  color: #ff4a4a;
-  padding: 0.75rem;
-  border-radius: 4px;
-  margin-bottom: 1rem;
-  font-size: 0.875rem;
-}
+/* form-actions, btn-*, error-message styles are in index.css */

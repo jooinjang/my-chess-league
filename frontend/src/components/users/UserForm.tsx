@@ -122,7 +122,7 @@ export function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
     <form className="user-form" onSubmit={handleSubmit}>
       <h3>{isEditMode ? 'Edit User' : 'Add New User'}</h3>
 
-      {error && <div className="error-message">{error}</div>}
+      {error && <div className="error-message" role="alert" aria-live="polite">{error}</div>}
 
       <div className="form-group">
         <label htmlFor="name">Name *</label>
@@ -138,13 +138,22 @@ export function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
 
       {!isEditMode && (
         <div className="form-group">
-          <label>Initial Rating *</label>
-          <div className="rating-cards">
+          <label id="rating-label">Initial Rating *</label>
+          <div className="rating-cards" role="radiogroup" aria-labelledby="rating-label">
             {RATING_OPTIONS.map((option) => (
               <div
                 key={option.id}
                 className={`rating-card ${selectedRating === option.id ? 'selected' : ''}`}
                 onClick={() => setSelectedRating(option.id)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setSelectedRating(option.id);
+                  }
+                }}
+                role="radio"
+                aria-checked={selectedRating === option.id}
+                tabIndex={selectedRating === option.id ? 0 : -1}
               >
                 <div className="rating-card-header">
                   <span className="rating-card-label">{option.label}</span>

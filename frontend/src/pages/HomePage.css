@@ -47,6 +47,12 @@
   padding: 0.75rem;
   background: #16213e;
   border-radius: 4px;
+  transition: transform var(--transition-normal), background-color var(--transition-normal);
+}
+
+.ranking-item:hover {
+  transform: translateX(4px);
+  background: #1a2744;
 }
 
 .ranking-item .rank {
@@ -121,6 +127,13 @@
   font-size: 0.75rem;
   opacity: 0.6;
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.125rem;
+}
+
+.ranking-item .rating-change .change-icon {
+  font-size: 0.625rem;
 }
 
 .ranking-item .rating-change.positive {
@@ -155,6 +168,12 @@
   padding: 0.75rem;
   background: #16213e;
   border-radius: 4px;
+  transition: transform var(--transition-normal), background-color var(--transition-normal);
+}
+
+.match-item:hover {
+  transform: translateX(4px);
+  background: #1a2744;
 }
 
 .match-item .players {

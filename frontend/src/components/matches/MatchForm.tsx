@@ -45,7 +45,7 @@ export function MatchForm({ users, onSubmit, onCancel }: MatchFormProps) {
     <form className="match-form" onSubmit={handleSubmit}>
       <h3>Record Match Result</h3>
 
-      {error && <div className="error-message">{error}</div>}
+      {error && <div className="error-message" role="alert" aria-live="polite">{error}</div>}
 
       <div className="form-row">
         <div className="form-group">

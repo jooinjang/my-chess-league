@@ -172,7 +172,11 @@ export function HomePage() {
                                 ? 'negative'
                                 : 'neutral'
                             }`}
+                            aria-label={`Last rating change: ${stats.lastRatingChange > 0 ? 'increased by' : stats.lastRatingChange < 0 ? 'decreased by' : ''} ${Math.abs(stats.lastRatingChange)}`}
                           >
+                            <span className="change-icon" aria-hidden="true">
+                              {stats.lastRatingChange > 0 ? '▲' : stats.lastRatingChange < 0 ? '▼' : '–'}
+                            </span>
                             {stats.lastRatingChange > 0 ? '+' : ''}
                             {stats.lastRatingChange}
                           </span>

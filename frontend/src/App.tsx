@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Layout } from './components/layout';
 import { ToastProvider } from './components/common';
-import { HomePage, UsersPage, MatchesPage, LeaguesPage, LeagueDetailPage, TournamentsPage, TournamentDetailPage } from './pages';
+import { HomePage, UsersPage, UserDetailPage, MatchesPage, LeaguesPage, LeagueDetailPage, TournamentsPage, TournamentDetailPage } from './pages';
 
 function App() {
   return (
@@ -11,6 +11,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/users" element={<UsersPage />} />
+            <Route path="/users/:id" element={<UserDetailPage />} />
             <Route path="/matches" element={<MatchesPage />} />
             <Route path="/leagues" element={<LeaguesPage />} />
             <Route path="/leagues/:id" element={<LeagueDetailPage />} />

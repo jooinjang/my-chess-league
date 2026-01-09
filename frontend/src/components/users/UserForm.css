@@ -3,6 +3,7 @@
   padding: 1.5rem;
   border-radius: 8px;
   margin-bottom: 1.5rem;
+  animation: fadeIn var(--transition-slow) ease-out;
 }
 
 .user-form h3 {
@@ -10,33 +11,7 @@
   color: #fff;
 }
 
-.form-group {
-  margin-bottom: 1rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #a0a0a0;
-  font-size: 0.875rem;
-}
-
-.form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #333;
-  border-radius: 4px;
-  background: #0f0f1a;
-  color: #fff;
-  font-size: 1rem;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: #4a9eff;
-}
+/* form-group base styles are in index.css */
 
 .form-group .rating-display {
   padding: 0.75rem;
@@ -46,57 +21,7 @@
   font-weight: 600;
 }
 
-.form-actions {
-  display: flex;
-  gap: 0.75rem;
-  justify-content: flex-end;
-  margin-top: 1.5rem;
-}
-
-.btn-primary,
-.btn-secondary {
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.btn-primary {
-  background: #4a9eff;
-  color: #fff;
-  border: none;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background: #3a8eef;
-}
-
-.btn-primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.btn-secondary {
-  background: transparent;
-  color: #a0a0a0;
-  border: 1px solid #333;
-}
-
-.btn-secondary:hover {
-  background: #333;
-  color: #fff;
-}
-
-.error-message {
-  background: #ff4a4a20;
-  color: #ff4a4a;
-  padding: 0.75rem;
-  border-radius: 4px;
-  margin-bottom: 1rem;
-  font-size: 0.875rem;
-}
+/* form-actions, btn-*, error-message styles are in index.css */
 
 .chesscom-input-group {
   display: flex;
@@ -107,27 +32,7 @@
   flex: 1;
 }
 
-.btn-validate {
-  padding: 0.75rem 1rem;
-  background: #16213e;
-  color: #4a9eff;
-  border: 1px solid #4a9eff;
-  border-radius: 4px;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-
-.btn-validate:hover:not(:disabled) {
-  background: #4a9eff;
-  color: #fff;
-}
-
-.btn-validate:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+/* btn-validate styles are in index.css */
 
 .validation-status {
   display: block;
@@ -161,18 +66,25 @@
   border: 2px solid #333;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all var(--transition-normal);
 }
 
 .rating-card:hover {
   border-color: #4a9eff;
   background: #16213e;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(74, 158, 255, 0.15);
 }
 
 .rating-card.selected {
   border-color: #4a9eff;
   background: #16213e;
   box-shadow: 0 0 0 1px #4a9eff;
+}
+
+.rating-card:focus-visible {
+  outline: 2px solid #4a9eff;
+  outline-offset: 2px;
 }
 
 .rating-card-header {

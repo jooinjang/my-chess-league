@@ -32,6 +32,10 @@
   border-bottom: none;
 }
 
+.match-list tbody tr {
+  transition: background-color var(--transition-normal);
+}
+
 .match-list tr:hover td {
   background: #16213e;
 }
@@ -92,6 +96,11 @@
   color: #a0a0a0;
 }
 
+.match-list .rating-change .change-icon {
+  font-size: 0.625rem;
+  margin-right: 0.125rem;
+}
+
 .match-list .rating-change .separator {
   color: #a0a0a0;
   margin: 0 0.5rem;
@@ -101,29 +110,7 @@
   text-align: right;
 }
 
-.btn-delete {
-  background: transparent;
-  color: #ff4a4a;
-  border: 1px solid #ff4a4a;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.75rem;
-  transition: all 0.2s;
-}
-
-.btn-delete:hover {
-  background: #ff4a4a;
-  color: #fff;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 3rem;
-  color: var(--color-text-secondary);
-  background: var(--color-bg-secondary);
-  border-radius: var(--radius-md);
-}
+/* btn-delete, empty-state styles are in index.css */
 
 /* Mobile Card Layout */
 @media (max-width: 768px) {
