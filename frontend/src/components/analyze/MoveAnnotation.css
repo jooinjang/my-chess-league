@@ -1,0 +1,40 @@
+.move-annotation {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: var(--radius-sm);
+  min-width: 18px;
+}
+
+.move-annotation.brilliant {
+  background: #26c2a3;
+  color: #fff;
+}
+
+.move-annotation.good {
+  background: #96bc4b;
+  color: #fff;
+}
+
+.move-annotation.interesting {
+  background: #8e9ce4;
+  color: #fff;
+}
+
+.move-annotation.inaccuracy {
+  background: #f7c631;
+  color: #000;
+}
+
+.move-annotation.mistake {
+  background: #e69f00;
+  color: #000;
+}
+
+.move-annotation.blunder {
+  background: #ca3431;
+  color: #fff;
+}

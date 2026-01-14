@@ -1,5 +1,6 @@
 import { apiClient } from './client';
 import { ApiResponse, Match, CreateMatchRequest, BulkCreateMatchRequest } from '../types';
+import type { GameAnalysis } from '../types/analysis';
 
 interface BulkCreateResponse {
   matches: Match[];
@@ -33,6 +34,19 @@ export const matchApi = {
 
   deleteAll: async (): Promise<{ deleted_count: number }> => {
     const response = await apiClient.delete<ApiResponse<{ deleted_count: number }>>('/matches');
+    return response.data.data!;
+  },
+
+  analyze: async (matchId: number, opts?: { depth?: number; multipv?: number }): Promise<void> => {
+    const params = new URLSearchParams();
+    if (opts?.depth) params.set('depth', String(opts.depth));
+    if (opts?.multipv) params.set('multipv', String(opts.multipv));
+    const q = params.toString();
+    await apiClient.post<ApiResponse<unknown>>(`/matches/${matchId}/analyze${q ? `?${q}` : ''}`);
+  },
+
+  getAnalysis: async (matchId: number): Promise<GameAnalysis> => {
+    const response = await apiClient.get<ApiResponse<GameAnalysis>>(`/matches/${matchId}/analysis`);
     return response.data.data!;
   },
 };

@@ -1,0 +1,253 @@
+.analyze-page {
+  padding: var(--spacing-lg);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.analyze-page h1 {
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-text-primary);
+}
+
+/* Main analysis layout - board left, panel right */
+.analyze-content {
+  display: flex;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-lg);
+  align-items: stretch;
+}
+
+/* Board section with eval bar */
+.board-section {
+  display: flex;
+  gap: 0;
+  flex-shrink: 0;
+}
+
+/* Right panel - contained card layout */
+.side-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  min-width: 340px;
+  max-width: 420px;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  height: 480px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Player stats section - side by side */
+.player-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-sm);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.player-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.player-stat.white {
+  align-items: flex-start;
+}
+
+.player-stat.black {
+  align-items: flex-end;
+}
+
+.player-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.player-name .color-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.player-name .color-indicator.white {
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+}
+
+.player-name .color-indicator.black {
+  background: #333;
+}
+
+.player-accuracy {
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.player-accuracy.white {
+  color: var(--color-text-primary);
+}
+
+.player-accuracy.black {
+  color: var(--color-text-secondary);
+}
+
+.player-accuracy-label {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Move list wrapper */
+.move-list-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  flex: 1;
+  min-height: 0;
+  overflow: hidden; /* children define their own scroll areas */
+}
+
+.top-lines-wrapper {
+  flex: 0 0 auto;
+  min-height: 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.moves-wrapper {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Engine panel */
+.engine-panel-wrapper {
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--spacing-sm);
+}
+
+/* Evaluation graph at bottom */
+.graph-section {
+  margin-top: var(--spacing-lg);
+}
+
+/* Move feedback panel */
+.move-feedback {
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-sm);
+  margin-top: var(--spacing-xs);
+}
+
+.move-feedback h4 {
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.feedback-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.feedback-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.feedback-label {
+  color: var(--color-text-muted);
+}
+
+.feedback-value {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.feedback-value.positive {
+  color: var(--color-success);
+}
+
+.feedback-value.negative {
+  color: var(--color-error);
+}
+
+.feedback-best-move {
+  margin-top: 4px;
+  padding: 4px 8px;
+  background: var(--color-bg-primary);
+  border-radius: var(--radius-sm);
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--color-accent);
+}
+
+.no-game-selected {
+  margin-top: var(--spacing-xl);
+  padding: var(--spacing-xl);
+  text-align: center;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .analyze-content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .board-section {
+    justify-content: center;
+  }
+
+  .side-panel {
+    max-width: 100%;
+    width: 100%;
+    min-width: unset;
+  }
+
+  .side-panel {
+    height: auto;
+    overflow: visible;
+  }
+
+  .top-lines-wrapper {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .move-list-wrapper {
+    overflow: visible;
+  }
+}
+
+@media (max-width: 768px) {
+  .analyze-page {
+    padding: var(--spacing-md);
+  }
+
+  .player-stats {
+    gap: var(--spacing-xs);
+  }
+
+  .player-accuracy {
+    font-size: 16px;
+  }
+}

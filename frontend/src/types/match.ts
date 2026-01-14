@@ -13,6 +13,7 @@ export interface Match {
   white_rating_after: number;
   black_rating_after: number;
   chesscom_game_id?: string;
+  pgn?: string;
   white_player?: User;
   black_player?: User;
   created_at: string;
@@ -24,6 +25,7 @@ export interface CreateMatchRequest {
   result: MatchResult;
   played_at: string;
   chesscom_game_id?: string;
+  pgn?: string;
 }
 
 export interface BulkCreateMatchRequest {

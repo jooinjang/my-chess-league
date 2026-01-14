@@ -65,6 +65,13 @@ export function Header() {
           >
             Matches
           </Link>
+          <Link
+            to="/analyze"
+            className={`nav-link ${isActive('/analyze') ? 'active' : ''}`}
+            onClick={closeMenu}
+          >
+            Analyze
+          </Link>
         </nav>
 
         {isMenuOpen && <div className="nav-overlay" onClick={closeMenu} />}

@@ -23,6 +23,7 @@ type Match struct {
 	WhiteRatingAfter  float64     `json:"white_rating_after"`
 	BlackRatingAfter  float64     `json:"black_rating_after"`
 	ChesscomGameID    *string     `gorm:"uniqueIndex" json:"chesscom_game_id"`
+	PGN               *string     `gorm:"type:text" json:"pgn"`
 	CreatedAt         time.Time   `json:"created_at"`
 
 	// Relations
@@ -36,6 +37,7 @@ type CreateMatchRequest struct {
 	Result         MatchResult `json:"result" binding:"required,oneof=white_win black_win draw"`
 	PlayedAt       time.Time   `json:"played_at" binding:"required"`
 	ChesscomGameID *string     `json:"chesscom_game_id"`
+	PGN            *string     `json:"pgn"`
 }
 
 type BulkCreateMatchRequest struct {

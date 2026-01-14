@@ -10,6 +10,7 @@
 - Glicko-1 기반 레이팅 시스템
 - 리그 개최/진행/관리 (Swiss/Round Robin)
 - 토너먼트 개최/진행/관리 (Double Elimination)
+- 게임 분석 기능 (Stockfish 17.1 엔진 기반)
 - Google Chat 웹훅 알림
 
 ## 기술 스택
@@ -19,6 +20,8 @@
 - Vite (빌드 도구)
 - React Router (라우팅)
 - Axios (API 클라이언트)
+- chess.js (체스 로직)
+- Stockfish 17.1 WASM (체스 엔진)
 - CSS Variables 기반 디자인 시스템
 - 반응형 모바일 UI
 
@@ -67,6 +70,22 @@
 - 브라켓 자동 생성
 - 라운드 진행 및 결과 등록
 
+### 게임 분석 (Analyze)
+- **Stockfish 17.1 WASM 엔진**: 브라우저에서 실행되는 체스 엔진
+- **실시간 포지션 분석**: 현재 위치의 평가값 및 최선수 표시
+- **전체 게임 분석**: 모든 수에 대한 평가 및 주석 자동 생성
+- **평가 바 (Evaluation Bar)**: 현재 형세를 시각적으로 표시
+- **평가 그래프 (Evaluation Graph)**: 게임 전체 흐름 시각화
+- **수 주석 (Move Annotation)**:
+  - `!!` (Brilliant): 승률 10% 이상 개선
+  - `!` (Great): 승률 5% 이상 개선
+  - `?!` (Inaccuracy): 승률 5% 이상 손실
+  - `?` (Mistake): 승률 10% 이상 손실
+  - `??` (Blunder): 승률 20% 이상 손실 또는 메이트 허용
+- **정확도 계산**: En-Croissant 공식 기반 (103.1668 * exp(-0.04354 * winChanceLoss) - 3.1669 + 1)
+- **변형(Variation) 지원**: 수 트리 구조로 대안 수 탐색 가능
+- **인터랙티브 보드**: 직접 수를 두며 엔진 피드백 확인
+
 ### Google Chat 연동
 - 새 플레이어 등록 시 알림 전송
 - 웹훅 URL 환경변수 설정
@@ -109,6 +128,10 @@ my-chess-league/
 │   └── middleware/             # 미들웨어
 │
 └── frontend/
+    ├── public/
+    │   └── stockfish/          # Stockfish 17.1 WASM 엔진 파일
+    │       ├── sf17_1-7.js
+    │       └── sf17_1-7.wasm
     ├── src/
     │   ├── api/                # API 클라이언트
     │   │   ├── userApi.ts
@@ -132,8 +155,22 @@ my-chess-league/
     │   │   │   ├── MatchList.tsx   # 모바일 카드 레이아웃 지원
     │   │   │   ├── ChesscomImport.tsx  # 개별 경기 가져오기
     │   │   │   └── ChesscomSync.tsx    # 일괄 경기 가져오기
-    │   │   └── chesscom/
-    │   │       └── ChesscomGamePicker.tsx
+    │   │   ├── chesscom/
+    │   │   │   └── ChesscomGamePicker.tsx
+    │   │   └── analyze/        # 게임 분석 컴포넌트
+    │   │       ├── ChessBoardPanel.tsx # 체스보드 패널
+    │   │       ├── MoveList.tsx        # 수 목록 (변형 지원)
+    │   │       ├── EvaluationBar.tsx   # 평가 바
+    │   │       ├── EvaluationGraph.tsx # 평가 그래프
+    │   │       ├── EnginePanel.tsx     # 엔진 설정 패널
+    │   │       ├── GameSelector.tsx    # 게임 선택
+    │   │       ├── GameReport.tsx      # 게임 보고서
+    │   │       └── MoveAnnotation.tsx  # 수 주석 표시
+    │   ├── hooks/              # Custom Hooks
+    │   │   ├── useStockfish.ts     # Stockfish 엔진 통신 및 분석
+    │   │   └── useChessGame.ts     # 체스 게임 상태 관리 (변형 지원)
+    │   ├── utils/              # 유틸리티 함수
+    │   │   └── analysisUtils.ts    # 분석 유틸리티 (정확도, 주석 계산)
     │   ├── pages/
     │   │   ├── HomePage.tsx        # Dashboard (랭킹, 최근 매치)
     │   │   ├── UsersPage.tsx
@@ -141,8 +178,11 @@ my-chess-league/
     │   │   ├── LeaguesPage.tsx     # 리그 목록/생성
     │   │   ├── LeagueDetailPage.tsx # 리그 상세 (페어링, 순위표)
     │   │   ├── TournamentsPage.tsx # 토너먼트 목록/생성
-    │   │   └── TournamentDetailPage.tsx # 토너먼트 상세 (브라켓)
+    │   │   ├── TournamentDetailPage.tsx # 토너먼트 상세 (브라켓)
+    │   │   └── AnalyzePage.tsx     # 게임 분석 페이지
     │   ├── types/              # TypeScript 타입
+    │   │   ├── index.ts            # 공통 타입 (User, Match 등)
+    │   │   └── analysis.ts         # 분석 관련 타입
     │   └── index.css           # CSS 변수 정의 (디자인 토큰)
     └── ...
 ```
@@ -249,6 +289,7 @@ npm run dev -- --host
 | white_rating_before/after | float64 | 백 레이팅 변화 |
 | black_rating_before/after | float64 | 흑 레이팅 변화 |
 | chesscom_game_id | *string | Chess.com 경기 ID (중복 방지용) |
+| pgn | *string | PGN 기보 (분석용, nullable) |
 
 ### League
 | 필드 | 타입 | 설명 |
@@ -267,6 +308,34 @@ npm run dev -- --host
 | format | string | double_elimination |
 | status | string | pending / in_progress / completed |
 | current_round | int | 현재 라운드 번호 |
+
+## 분석 타입 (Frontend)
+
+### MoveAnalysis
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| moveNumber | number | 수 번호 |
+| color | 'w' \| 'b' | 색상 |
+| san | string | 표준 기보법 (e.g., "e4", "Nf3") |
+| fen | string | 수 이후 포지션 |
+| evalBefore | number | 수 이전 평가값 (플레이어 기준) |
+| evalAfter | number | 수 이후 평가값 (플레이어 기준) |
+| evalAfterWhite | number | 수 이후 평가값 (백 기준, 그래프용) |
+| bestMove | string | 엔진 추천 최선수 |
+| evalLoss | number | 평가값 손실 (centipawns) |
+| annotation | MoveAnnotation | 수 주석 (!!, !, ?!, ?, ??) |
+| pv | string[] | Principal Variation (최선 변형) |
+
+### MoveNode (변형 트리)
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| id | string | 고유 식별자 |
+| move | ChessMove \| null | 수 정보 (루트는 null) |
+| fen | string | 해당 수 이후 포지션 |
+| children | MoveNode[] | 자식 노드 (첫 번째가 메인 라인) |
+| parent | MoveNode \| null | 부모 노드 |
+| isMainLine | boolean | 메인 라인 여부 |
+| depth | number | 트리 깊이 |
 
 ## CSS 변수 (디자인 토큰)
 
@@ -305,3 +374,10 @@ npm run dev -- --host
 - CSS 색상은 하드코딩 대신 CSS 변수 사용 권장
 - Toast 알림으로 사용자 액션 피드백 제공
 - 모바일 반응형 고려 (768px 브레이크포인트)
+
+### 분석 기능 관련
+- Stockfish WASM 파일은 `frontend/public/stockfish/`에 위치
+- 엔진은 브라우저에서 동적 import로 로드 (Vite 정적 분석 회피)
+- 평가값은 centipawns 단위 (100 = 1 폰 이점)
+- 정확도 계산은 En-Croissant 공식 사용 (승률 기반)
+- 변형(Variation)은 수 트리 구조로 관리 (첫 번째 자식이 메인 라인)

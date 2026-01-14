@@ -134,6 +134,7 @@ export function ChesscomImport({ users, onComplete, onCancel }: ChesscomImportPr
           result: convertToMatchResult(game),
           played_at: new Date(game.end_time * 1000).toISOString(),
           chesscom_game_id: game.game_id,
+          pgn: game.pgn,
         };
       });
 

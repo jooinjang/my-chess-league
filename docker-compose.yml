@@ -7,6 +7,12 @@ services:
       HOST: 0.0.0.0
       PORT: 8080
       DB_PATH: /data/chess_league.db
+      ANALYSIS_ENGINE: chess_api
+      ANALYSIS_TIMEOUT_SECONDS: 60
+      CHESS_API_URL: https://chess-api.com/v1
+      CHESS_API_WS: wss://chess-api.com/v1
+      CHESS_API_MAX_THINKING_MS: 50
+      STOCKFISH_PATH: /usr/games/stockfish
       GOOGLE_CHAT_WEBHOOK_URL: https://chat.googleapis.com/v1/spaces/AAQA2KZ970A/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=KicLFkX1Zt6LS_5Qeysg8cpubieGRioGSEse3_mY_wA
     volumes:
       - backend_data:/data

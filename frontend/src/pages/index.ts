@@ -6,3 +6,4 @@ export { LeaguesPage } from './LeaguesPage';
 export { LeagueDetailPage } from './LeagueDetailPage';
 export { TournamentsPage } from './TournamentsPage';
 export { TournamentDetailPage } from './TournamentDetailPage';
+export { AnalyzePage } from './AnalyzePage';

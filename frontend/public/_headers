@@ -1,0 +1,4 @@
+# Required for SharedArrayBuffer (Stockfish WASM)
+/*
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp

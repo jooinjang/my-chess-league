@@ -54,6 +54,8 @@ func InitDB() {
 	err = DB.AutoMigrate(
 		&models.User{},
 		&models.Match{},
+		&models.MatchAnalysis{},
+		&models.MatchAnalysisPosition{},
 		&models.League{},
 		&models.LeagueParticipant{},
 		&models.LeaguePairing{},

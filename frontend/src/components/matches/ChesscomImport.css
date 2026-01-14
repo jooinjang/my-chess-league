@@ -62,25 +62,38 @@
   border-color: #4a9eff;
 }
 
-.btn-search {
+.chesscom-import .btn-search {
   padding: 0.75rem 1.5rem;
-  background: #4a9eff;
-  color: #fff;
+  background-color: #4a9eff;
+  color: #ffffff;
   border: none;
   border-radius: 4px;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
 }
 
-.btn-search:hover:not(:disabled) {
-  background: #3a8eef;
+.chesscom-import .btn-search:hover:not(:disabled) {
+  background-color: #3a8eef;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 158, 255, 0.3);
 }
 
-.btn-search:disabled {
-  opacity: 0.6;
+.chesscom-import .btn-search:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.chesscom-import .btn-search:disabled {
+  background-color: #16213e;
+  color: #666666;
   cursor: not-allowed;
+}
+
+.chesscom-import .btn-search:focus-visible {
+  outline: 2px solid #4a9eff;
+  outline-offset: 2px;
 }
 
 .results-section {

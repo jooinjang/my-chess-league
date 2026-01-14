@@ -68,6 +68,7 @@ func (s *MatchService) CreateMatch(req *models.CreateMatchRequest) (*models.Matc
 		WhiteRatingBefore: whitePlayer.Rating,
 		BlackRatingBefore: blackPlayer.Rating,
 		ChesscomGameID:    req.ChesscomGameID,
+		PGN:               req.PGN,
 	}
 
 	// Start transaction

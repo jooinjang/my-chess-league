@@ -38,6 +38,9 @@ func SetupRouter() *gin.Engine {
 		{
 			matches.GET("", handlers.GetMatches)
 			matches.GET("/:id", handlers.GetMatch)
+			matches.POST("/:id/analyze", handlers.AnalyzeMatch)
+			matches.GET("/:id/analysis", handlers.GetMatchAnalysis)
+			matches.GET("/:id/analysis/stream", handlers.StreamMatchAnalysisProgress)
 			matches.POST("", handlers.CreateMatch)
 			matches.POST("/bulk", handlers.CreateMatchesBulk)
 			matches.DELETE("", handlers.DeleteAllMatches)

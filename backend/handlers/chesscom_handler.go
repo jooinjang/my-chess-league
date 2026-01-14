@@ -302,6 +302,12 @@ func SyncChesscomMonth(c *gin.Context) {
 		result := services.ConvertResultToMatchResult(g.White.Result, g.Black.Result)
 		playedAt := time.Unix(g.EndTime, 0).UTC()
 		gameIDCopy := gameID
+		pgnCopy := g.PGN
+
+		var pgnPtr *string
+		if pgnCopy != "" {
+			pgnPtr = &pgnCopy
+		}
 
 		matchesToCreate = append(matchesToCreate, models.CreateMatchRequest{
 			WhitePlayerID:  whiteUser.ID,
@@ -309,6 +315,7 @@ func SyncChesscomMonth(c *gin.Context) {
 			Result:         models.MatchResult(result),
 			PlayedAt:       playedAt,
 			ChesscomGameID: &gameIDCopy,
+			PGN:            pgnPtr,
 		})
 	}
 
