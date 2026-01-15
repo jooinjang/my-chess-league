@@ -1,149 +1,151 @@
 .analyze-page {
-  padding: var(--spacing-lg);
-  max-width: 1400px;
+  padding: var(--spacing-md) var(--spacing-lg);
+  max-width: 1600px;
   margin: 0 auto;
 }
 
 .analyze-page h1 {
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
   color: var(--color-text-primary);
+  font-size: 1.5rem;
 }
 
 /* Main analysis layout - board left, panel right */
 .analyze-content {
   display: flex;
   gap: var(--spacing-lg);
-  margin-top: var(--spacing-lg);
-  align-items: stretch;
+  margin-top: var(--spacing-md);
+  align-items: flex-start;
 }
 
-/* Board section with eval bar */
-.board-section {
-  display: flex;
-  gap: var(--spacing-xs);
-  flex-shrink: 0;
-  align-items: stretch;
-}
-
-/* Right panel - contained card layout */
-.side-panel {
-  flex: 1;
+/* Board column with player info */
+.board-column {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
-  min-width: 340px;
-  max-width: 420px;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Player info on board */
+.board-player {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
   background: var(--color-bg-secondary);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-md);
-  height: 480px;
-  min-height: 0;
-  overflow: hidden;
+  border-radius: var(--radius-sm);
+  min-width: 200px;
 }
 
-/* Player stats section - side by side */
-.player-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-sm);
-  padding-bottom: var(--spacing-sm);
-  border-bottom: 1px solid var(--color-border);
+.board-player .player-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.player-stat {
+.board-player .player-avatar.white {
+  background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+}
+
+.board-player .player-avatar.black {
+  background: linear-gradient(135deg, #444, #222);
+}
+
+.board-player .color-indicator {
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+}
+
+.board-player .color-indicator.white {
+  background: #fff;
+  border: 1px solid #ccc;
+}
+
+.board-player .color-indicator.black {
+  background: #333;
+}
+
+.board-player .player-info {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.player-stat.white {
-  align-items: flex-start;
-}
-
-.player-stat.black {
-  align-items: flex-end;
-}
-
-.player-name {
-  font-size: 13px;
+.board-player .player-name {
+  font-size: 14px;
   font-weight: 600;
   color: var(--color-text-primary);
+}
+
+.board-player .player-accuracy {
+  font-size: 12px;
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+/* Board section with eval bar */
+.board-section {
   display: flex;
-  align-items: center;
   gap: 6px;
+  flex-shrink: 0;
+  align-items: stretch;
 }
 
-.player-name .color-indicator {
-  width: 10px;
-  height: 10px;
-  border-radius: 2px;
-}
-
-.player-name .color-indicator.white {
-  background: #f0f0f0;
-  border: 1px solid #ccc;
-}
-
-.player-name .color-indicator.black {
-  background: #333;
-}
-
-.player-accuracy {
-  font-size: 20px;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-
-.player-accuracy.white {
-  color: var(--color-text-primary);
-}
-
-.player-accuracy.black {
-  color: var(--color-text-secondary);
-}
-
-.player-accuracy-label {
-  font-size: 10px;
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* Move list wrapper */
-.move-list-wrapper {
+/* Right panel - scrollable */
+.side-panel {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-sm);
-  flex: 1;
-  min-height: 0;
-  overflow: hidden; /* children define their own scroll areas */
-}
-
-.top-lines-wrapper {
-  flex: 0 0 auto;
-  min-height: 0;
-  max-height: 220px;
-  overflow-y: auto;
-}
-
-.moves-wrapper {
-  flex: 1 1 auto;
-  min-height: 0;
+  min-width: 380px;
+  max-width: 480px;
+  max-height: calc(560px + 32px + 32px + 16px); /* board + players + gaps */
   overflow: hidden;
 }
 
-/* Engine panel */
-.engine-panel-wrapper {
-  border-top: 1px solid var(--color-border);
-  padding-top: var(--spacing-sm);
+/* Review section at top */
+.review-section {
+  flex: 0 0 auto;
+  max-height: 200px;
+  overflow-y: auto;
 }
 
-/* Evaluation graph at bottom */
-.graph-section {
-  margin-top: var(--spacing-lg);
+/* Engine section */
+.engine-section {
+  flex: 0 0 auto;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm);
 }
 
-/* Move feedback panel */
+/* Move list section - takes remaining space */
+.moves-section {
+  flex: 1 1 auto;
+  min-height: 150px;
+  overflow: hidden;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+}
+
+/* Evaluation graph - compact inline */
+.graph-section-inline {
+  flex: 0 0 auto;
+  height: 80px;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-xs);
+  overflow: hidden;
+}
+
+.graph-section-inline .evaluation-graph {
+  height: 100%;
+}
+
+/* Move feedback panel (legacy) */
 .move-feedback {
   background: var(--color-bg-tertiary);
   border-radius: var(--radius-sm);
@@ -207,48 +209,72 @@
   color: var(--color-text-secondary);
 }
 
-/* Responsive */
-@media (max-width: 1100px) {
+/* Responsive - tablet */
+@media (max-width: 1200px) {
   .analyze-content {
     flex-direction: column;
     align-items: center;
   }
 
-  .board-section {
-    justify-content: center;
+  .board-column {
+    width: 100%;
+    max-width: 600px;
+  }
+
+  .board-player {
+    width: 100%;
+    max-width: 560px;
   }
 
   .side-panel {
     max-width: 100%;
     width: 100%;
     min-width: unset;
-  }
-
-  .side-panel {
-    height: auto;
-    overflow: visible;
-  }
-
-  .top-lines-wrapper {
     max-height: none;
-    overflow: visible;
   }
 
-  .move-list-wrapper {
-    overflow: visible;
+  .review-section {
+    max-height: none;
+  }
+
+  .moves-section {
+    max-height: 300px;
+  }
+
+  .graph-section-inline {
+    height: 100px;
   }
 }
 
+/* Responsive - mobile */
 @media (max-width: 768px) {
   .analyze-page {
-    padding: var(--spacing-md);
+    padding: var(--spacing-sm);
   }
 
-  .player-stats {
-    gap: var(--spacing-xs);
+  .analyze-page h1 {
+    font-size: 1.25rem;
   }
 
-  .player-accuracy {
-    font-size: 16px;
+  .board-player {
+    padding: 4px 8px;
+  }
+
+  .board-player .player-avatar {
+    width: 24px;
+    height: 24px;
+  }
+
+  .board-player .color-indicator {
+    width: 14px;
+    height: 14px;
+  }
+
+  .board-player .player-name {
+    font-size: 12px;
+  }
+
+  .board-player .player-accuracy {
+    font-size: 10px;
   }
 }

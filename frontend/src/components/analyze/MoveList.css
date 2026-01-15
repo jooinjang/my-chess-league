@@ -1,18 +1,31 @@
 .move-list-container {
-  background: var(--color-bg-secondary);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-sm);
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow: hidden;
 }
 
 .move-list {
   flex: 1;
   overflow-y: auto;
-  font-family: monospace;
-  font-size: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 13px;
   min-height: 0;
+}
+
+.move-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.move-list-header h3 {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-primary);
 }
 
 .time-meta {
@@ -42,10 +55,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4px 8px;
-  margin-bottom: 6px;
-  background: var(--color-bg-tertiary);
-  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  background: rgba(255, 180, 0, 0.1);
   border-left: 3px solid var(--color-warning);
 }
 
@@ -61,9 +72,9 @@
   background: transparent;
   border: 1px solid var(--color-border);
   color: var(--color-text-secondary);
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: var(--radius-sm);
-  font-size: 10px;
+  font-size: 11px;
   cursor: pointer;
   transition: all var(--transition-fast);
 }
@@ -74,119 +85,65 @@
   border-color: var(--color-accent);
 }
 
-/* Tree-based move list */
-.move-tree-content {
-  line-height: 1.6;
-  padding: 2px 4px;
-}
-
-.variation-move {
-  display: inline;
-  white-space: nowrap;
-}
-
-.variation-move .move-number {
-  color: var(--color-text-muted);
-  font-size: 11px;
-  margin-right: 2px;
-}
-
-/* Variations in parentheses */
-.variation {
-  display: inline;
-  color: var(--color-text-secondary);
-  font-size: 11px;
-}
-
-.variation .move {
-  font-size: 11px;
-  min-width: auto;
-  padding: 1px 3px;
-}
-
-.variation-bracket {
-  color: var(--color-text-muted);
-  margin: 0 2px;
-}
-
-/* Nested variation depth styling */
-.variation.depth-1 {
-  color: var(--color-text-secondary);
-}
-
-.variation.depth-2 {
-  color: var(--color-text-muted);
-  font-size: 10px;
-}
-
-.variation.depth-3 {
-  color: var(--color-text-muted);
-  font-size: 10px;
-  opacity: 0.8;
-}
-
-.no-moves {
-  color: var(--color-text-muted);
-  font-style: italic;
-  padding: 8px;
-  text-align: center;
-}
-
 /* Chess.com style table layout */
 .move-table {
   width: 100%;
   border-collapse: collapse;
-  font-family: monospace;
-  font-size: 13px;
+  table-layout: fixed;
 }
 
 .move-table .move-row {
-  display: table-row;
-  padding: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .move-table .move-row:hover {
-  background: var(--color-bg-tertiary);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .move-table td {
-  padding: 4px 6px;
+  padding: 0;
   vertical-align: middle;
+  height: 32px;
 }
 
 .move-table td.move-number {
-  width: 32px;
-  text-align: right;
+  width: 36px;
+  text-align: center;
   color: var(--color-text-muted);
   font-size: 12px;
-  padding-right: 8px;
-  border-right: 1px solid var(--color-border);
+  font-weight: 500;
+  background: rgba(0, 0, 0, 0.15);
 }
 
 .move-table .move-cell {
-  width: 50%;
-  padding: 3px 8px;
-}
-
-.move-table .move-cell.white {
-  border-right: 1px solid var(--color-border);
+  width: calc(50% - 18px);
+  padding: 2px 4px;
 }
 
 .move-table .move-cell .move {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 3px;
-  padding: 3px 6px;
-  border-radius: var(--radius-sm);
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  transition: background-color 0.15s ease;
+  width: 100%;
 }
 
-.move-table .move-cell .move.move-with-time {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  gap: 8px;
+.move-table .move-cell .move:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.move-table .move-cell .move.active {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.move-san {
+  font-weight: 600;
+  font-size: 13px;
+  min-width: 40px;
 }
 
 .move-time {
@@ -194,8 +151,14 @@
   font-size: 11px;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  margin-left: auto;
 }
 
+.move.active .move-time {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Move annotation badges */
 .move-comment-indicator {
   display: inline-flex;
   align-items: center;
@@ -206,30 +169,29 @@
   border: 1px solid var(--color-border);
   background: var(--color-bg-tertiary);
   color: var(--color-text-secondary);
-  font-size: 10px;
-  line-height: 1;
+  font-size: 9px;
   font-weight: 700;
-  flex: 0 0 auto;
+  flex-shrink: 0;
 }
 
 .move.active .move-comment-indicator {
-  border-color: rgba(255, 255, 255, 0.55);
+  border-color: rgba(255, 255, 255, 0.5);
   background: rgba(255, 255, 255, 0.15);
   color: rgba(255, 255, 255, 0.9);
 }
 
 .move-comment-panel {
-  margin-top: var(--spacing-xs);
-  padding: 8px 10px;
-  border-radius: var(--radius-md);
+  padding: 8px 12px;
   background: var(--color-bg-tertiary);
-  border: 1px solid var(--color-border);
+  border-top: 1px solid var(--color-border);
 }
 
 .move-comment-title {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   margin-bottom: 4px;
 }
 
@@ -241,187 +203,151 @@
   word-break: break-word;
 }
 
+/* Judgement badges - compact version for move list */
 .judgement-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2px 6px;
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.2px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--color-text-secondary);
-  white-space: nowrap;
+  display: none; /* Hide in move list for cleaner look */
 }
 
-.move.active .judgement-badge {
-  border-color: rgba(255, 255, 255, 0.35);
-  background: rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.95);
-}
-
-.judgement-badge.brilliant {
-  background: rgba(0, 200, 140, 0.18);
-  border-color: rgba(0, 200, 140, 0.45);
-  color: rgba(0, 230, 160, 0.95);
-}
-
-.judgement-badge.great {
-  background: rgba(74, 158, 255, 0.18);
-  border-color: rgba(74, 158, 255, 0.45);
-  color: rgba(74, 158, 255, 0.95);
-}
-
-.judgement-badge.best {
-  background: rgba(255, 215, 0, 0.16);
-  border-color: rgba(255, 215, 0, 0.45);
-  color: rgba(255, 225, 80, 0.95);
-}
-
-.judgement-badge.excellent {
-  background: rgba(180, 210, 255, 0.14);
-  border-color: rgba(180, 210, 255, 0.32);
-  color: rgba(200, 220, 255, 0.95);
-}
-
-.judgement-badge.good {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.18);
-  color: var(--color-text-secondary);
-}
-
-.judgement-badge.book {
-  background: rgba(180, 180, 255, 0.12);
-  border-color: rgba(180, 180, 255, 0.30);
-  color: rgba(200, 200, 255, 0.95);
-}
-
-.judgement-badge.inaccuracy {
-  background: rgba(255, 165, 0, 0.16);
-  border-color: rgba(255, 165, 0, 0.42);
-  color: rgba(255, 185, 70, 0.95);
-}
-
-.judgement-badge.miss,
-.judgement-badge.mistake {
-  background: rgba(255, 95, 95, 0.14);
-  border-color: rgba(255, 95, 95, 0.40);
-  color: rgba(255, 120, 120, 0.95);
-}
-
-.judgement-badge.blunder {
-  background: rgba(255, 60, 60, 0.18);
-  border-color: rgba(255, 60, 60, 0.50);
-  color: rgba(255, 90, 90, 0.98);
-}
-
-.judgement-badge.normal {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.12);
-  color: var(--color-text-muted);
-}
-
-.move.active .move-time {
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.move-table .move-cell .move:hover {
-  background: var(--color-bg-primary);
-}
-
-.move-table .move-cell .move.active {
-  background: var(--color-accent);
-  color: var(--color-text-primary);
-}
-
-.move-list-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-xs);
-}
-
-.move-list-header h3 {
-  margin: 0;
-  font-size: 12px;
-  color: var(--color-text-primary);
-}
-
-.move-list-content {
-  flex: 1;
-  overflow-y: auto;
-  font-family: monospace;
-  font-size: 12px;
-}
-
-.move-row {
-  display: flex;
-  align-items: center;
-  padding: 2px var(--spacing-xs);
-  border-radius: var(--radius-sm);
-}
-
-.move-row:hover {
-  background: var(--color-bg-tertiary);
-}
-
-.move-number {
-  color: var(--color-text-muted);
-  min-width: 24px;
-  font-size: 11px;
-}
-
-.move {
-  padding: 2px 4px;
-  cursor: pointer;
-  border-radius: var(--radius-sm);
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  min-width: 45px;
-}
-
-.move:hover {
-  background: var(--color-bg-primary);
-}
-
-.move.active {
-  background: var(--color-accent);
-  color: var(--color-text-primary);
-}
-
-.move-san {
-  font-weight: 500;
-}
-
+/* Navigation buttons - Chess.com style */
 .navigation-buttons {
   display: flex;
   justify-content: center;
-  gap: var(--spacing-xs);
-  margin-top: var(--spacing-xs);
-  padding-top: var(--spacing-xs);
+  gap: 4px;
+  padding: 8px;
+  background: var(--color-bg-tertiary);
   border-top: 1px solid var(--color-border);
 }
 
 .navigation-buttons button {
-  background: var(--color-bg-tertiary);
+  background: rgba(255, 255, 255, 0.08);
   border: none;
   color: var(--color-text-primary);
-  padding: 4px 8px;
-  border-radius: var(--radius-sm);
+  width: 44px;
+  height: 32px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 12px;
-  min-width: 28px;
-  transition: background-color var(--transition-fast);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease;
 }
 
 .navigation-buttons button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.navigation-buttons button:active:not(:disabled) {
   background: var(--color-accent);
 }
 
 .navigation-buttons button:disabled {
-  opacity: 0.4;
+  opacity: 0.3;
   cursor: not-allowed;
+}
+
+/* Tree-based move list (for variations) */
+.move-tree-content {
+  line-height: 1.8;
+  padding: 8px 12px;
+}
+
+.variation-move {
+  display: inline;
+  white-space: nowrap;
+}
+
+.variation-move .move-number {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  margin-right: 2px;
+}
+
+.variation {
+  display: inline;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+.variation .move {
+  font-size: 12px;
+  min-width: auto;
+  padding: 2px 4px;
+}
+
+.variation-bracket {
+  color: var(--color-text-muted);
+  margin: 0 3px;
+}
+
+.variation.depth-1 {
+  color: var(--color-text-secondary);
+}
+
+.variation.depth-2 {
+  color: var(--color-text-muted);
+  font-size: 11px;
+}
+
+.variation.depth-3 {
+  color: var(--color-text-muted);
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.no-moves {
+  color: var(--color-text-muted);
+  font-style: italic;
+  padding: 16px;
+  text-align: center;
+}
+
+/* Generic move styling */
+.move {
+  padding: 2px 4px;
+  cursor: pointer;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.move:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.move.active {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.move-number {
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+/* Move annotation symbol */
+.move-annotation {
+  font-weight: 700;
+  margin-left: 2px;
+}
+
+.move-annotation.brilliant {
+  color: #00c88c;
+}
+
+.move-annotation.great {
+  color: #4a9eff;
+}
+
+.move-annotation.inaccuracy {
+  color: #f5a623;
+}
+
+.move-annotation.mistake {
+  color: #e67e22;
+}
+
+.move-annotation.blunder {
+  color: #ff4444;
 }

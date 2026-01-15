@@ -85,6 +85,15 @@
 - **정확도 계산**: En-Croissant 공식 기반 (103.1668 * exp(-0.04354 * winChanceLoss) - 3.1669 + 1)
 - **변형(Variation) 지원**: 수 트리 구조로 대안 수 탐색 가능
 - **인터랙티브 보드**: 직접 수를 두며 엔진 피드백 확인
+- **실시간 수 피드백 (User Move Feedback)**:
+  - 사용자가 보드에서 수를 두면 즉시 분석
+  - 수 전/후 포지션을 병렬로 분석하여 정확한 평가 손실 계산
+  - 평가 바가 사용자 수에 맞춰 실시간 동기화
+  - Review 패널에 사용자 수 정보 표시 (주석, 평가값 변화, 최선수)
+- **Game Review 패널**:
+  - 오프닝 정보 및 변형 프리뷰
+  - Key Moments (중요 수) 목록 및 점프
+  - 현재 수 상세 정보 (정확도, CPL, 승률 변화)
 
 ### Google Chat 연동
 - 새 플레이어 등록 시 알림 전송
@@ -165,6 +174,7 @@ my-chess-league/
     │   │       ├── EnginePanel.tsx     # 엔진 설정 패널
     │   │       ├── GameSelector.tsx    # 게임 선택
     │   │       ├── GameReport.tsx      # 게임 보고서
+    │   │       ├── GameReviewPanel.tsx # 게임 리뷰 패널 (오프닝, Key moments, 수 피드백)
     │   │       └── MoveAnnotation.tsx  # 수 주석 표시
     │   ├── hooks/              # Custom Hooks
     │   │   ├── useStockfish.ts     # Stockfish 엔진 통신 및 분석
@@ -230,6 +240,11 @@ my-chess-league/
 - `GET /api/v1/chesscom/validate/:username` - Chess.com 사용자명 검증
 - `GET /api/v1/chesscom/games` - 두 사용자 간 경기 조회
 - `POST /api/v1/chesscom/sync` - 월별 전체 경기 동기화
+
+### Analysis (게임 분석)
+- `POST /api/v1/matches/:id/analyze` - 경기 전체 분석 (depth, multipv 옵션)
+- `GET /api/v1/matches/:id/analysis` - 경기 분석 결과 조회
+- `POST /api/v1/analyze/position` - 단일 포지션 분석 (fen, depth)
 
 ### Google Chat
 - `POST /api/v1/googlechat/send` - 메시지 전송
@@ -321,10 +336,38 @@ npm run dev -- --host
 | evalBefore | number | 수 이전 평가값 (플레이어 기준) |
 | evalAfter | number | 수 이후 평가값 (플레이어 기준) |
 | evalAfterWhite | number | 수 이후 평가값 (백 기준, 그래프용) |
+| mateBeforeWhite? | number | 메이트 거리 (백 기준, optional) |
+| mateAfterWhite? | number | 메이트 거리 (백 기준, optional) |
+| judgement | MoveJudgement | 수 판정 (brilliant/great/best/good/inaccuracy/mistake/blunder/book/normal) |
 | bestMove | string | 엔진 추천 최선수 |
+| bestMoveEval | number | 최선수 평가값 |
 | evalLoss | number | 평가값 손실 (centipawns) |
 | annotation | MoveAnnotation | 수 주석 (!!, !, ?!, ?, ??) |
+| annotationReason | string | 주석 이유 설명 |
 | pv | string[] | Principal Variation (최선 변형) |
+| winChanceBefore? | number | 수 이전 승률 (0-100, 플레이어 기준) |
+| winChanceAfter? | number | 수 이후 승률 (0-100, 플레이어 기준) |
+| winChanceLoss? | number | 승률 손실 (positive = worse) |
+| cpl? | number | Centipawn Loss (플레이어 기준) |
+| isBook? | boolean | 오프닝 북 수 여부 |
+| openingName? | string | 오프닝 이름 |
+| eco? | string | ECO 코드 |
+| isKeyMoment? | boolean | 중요 수 여부 |
+| swingCp? | number | 평가값 변화 (플레이어 기준) |
+| swingWinChance? | number | 승률 변화 (플레이어 기준) |
+
+### UserMoveFeedback (사용자 수 피드백)
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| san | string | 사용자가 둔 수 (SAN 표기) |
+| annotation | string \| null | 수 주석 (!!, !, ?!, ?, ??) |
+| reason | string | 평가 이유 |
+| evalBefore | number | 수 이전 평가값 (centipawns) |
+| evalAfter | number | 수 이후 평가값 (centipawns) |
+| bestMove | string | 엔진 추천 최선수 |
+| bestMoveEval | number | 최선수 평가값 |
+| evalAfterWhite? | number | 수 이후 평가값 (백 기준, 평가바용) |
+| mateAfterWhite? | number | 메이트 거리 (백 기준, optional) |
 
 ### MoveNode (변형 트리)
 | 필드 | 타입 | 설명 |
@@ -381,3 +424,9 @@ npm run dev -- --host
 - 평가값은 centipawns 단위 (100 = 1 폰 이점)
 - 정확도 계산은 En-Croissant 공식 사용 (승률 기반)
 - 변형(Variation)은 수 트리 구조로 관리 (첫 번째 자식이 메인 라인)
+- 실시간 수 분석:
+  - 수 전/후 포지션을 병렬로 분석 (`Promise.all`)
+  - 정확한 평가 손실 계산을 위해 양쪽 포지션 분석 필수
+  - 블런더 판정: > 300cp 손실, 미스테이크: > 100cp, 부정확: > 50cp
+  - 메이트 스코어는 10000 기준 centipawn으로 변환
+- GameReviewPanel 컴포넌트는 사용자 수 피드백과 분석된 수 정보를 모두 표시

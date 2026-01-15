@@ -9,7 +9,6 @@ import {
   GameSelector,
   ChessBoardPanel,
   MoveList,
-  TopLinesPanel,
   EvaluationBar,
   EvaluationGraph,
   EnginePanel,
@@ -29,7 +28,7 @@ interface MoveFeedback {
   mateAfterWhite?: number;
 }
 
-const BOARD_SIZE = 480;
+const BOARD_SIZE = 560;
 
 export function AnalyzePage() {
   const [matches, setMatches] = useState<Match[]>([]);
@@ -449,68 +448,79 @@ export function AnalyzePage() {
 
       {selectedMatch && (
         <div className="analyze-content">
-          {/* Left: Board with eval bar */}
-          <div className="board-section">
-            <EvaluationBar score={currentEvalForDisplay.score} mate={currentEvalForDisplay.mate} height={BOARD_SIZE} />
-            <ChessBoardPanel
-              fen={fen}
-              boardWidth={BOARD_SIZE}
-              arrows={boardArrows}
-              allowMoves={true}
-              onMove={handleMove}
-            />
-          </div>
-
-          {/* Right: Player stats + PGN + Engine */}
-          <div className="side-panel">
-            {/* Player Stats - Top */}
-            <div className="player-stats">
-              <div className="player-stat white">
-                <div className="player-name">
-                  <span className="color-indicator white"></span>
-                  {selectedMatch.white_player?.name || 'White'}
-                </div>
-                {playerStats ? (
-                  <>
-                    <div className="player-accuracy white">{playerStats.white.accuracy.toFixed(1)}</div>
-                    <div className="player-accuracy-label">Accuracy</div>
-                  </>
-                ) : (
-                  <div className="player-accuracy-label">-</div>
-                )}
+          {/* Left: Board with eval bar and player info */}
+          <div className="board-column">
+            {/* Top player (Black when viewing from White's perspective) */}
+            <div className="board-player top">
+              <div className="player-avatar black">
+                <span className="color-indicator black"></span>
               </div>
-              <div className="player-stat black">
-                <div className="player-name">
-                  {selectedMatch.black_player?.name || 'Black'}
-                  <span className="color-indicator black"></span>
-                </div>
-                {playerStats ? (
-                  <>
-                    <div className="player-accuracy black">{playerStats.black.accuracy.toFixed(1)}</div>
-                    <div className="player-accuracy-label">Accuracy</div>
-                  </>
-                ) : (
-                  <div className="player-accuracy-label">-</div>
+              <div className="player-info">
+                <span className="player-name">{selectedMatch.black_player?.name || 'Black'}</span>
+                {playerStats && (
+                  <span className="player-accuracy">{playerStats.black.accuracy.toFixed(1)}%</span>
                 )}
               </div>
             </div>
 
-            {/* PGN Table - Middle */}
-            <div className="move-list-wrapper">
-              <div className="top-lines-wrapper">
-                <GameReviewPanel
-                  analysis={analysis}
-                  currentMoveIndex={currentMoveIndex}
-                  onJumpToMove={goToMove}
-                  onPreviewOpeningLine={handlePreviewOpeningLine}
-                  selectedOpeningLine={openingPreviewMove}
-                  previewSanLine={openingPreviewSanLine}
-                  userMoveFeedback={moveFeedback}
-                  isAnalyzingUserMove={isAnalyzingMove}
-                />
-              <TopLinesPanel fen={fen} lines={[]} depth={depth} />
+            <div className="board-section">
+              <EvaluationBar score={currentEvalForDisplay.score} mate={currentEvalForDisplay.mate} height={BOARD_SIZE} />
+              <ChessBoardPanel
+                fen={fen}
+                boardWidth={BOARD_SIZE}
+                arrows={boardArrows}
+                allowMoves={true}
+                onMove={handleMove}
+              />
+            </div>
+
+            {/* Bottom player (White when viewing from White's perspective) */}
+            <div className="board-player bottom">
+              <div className="player-avatar white">
+                <span className="color-indicator white"></span>
               </div>
-              <div className="moves-wrapper">
+              <div className="player-info">
+                <span className="player-name">{selectedMatch.white_player?.name || 'White'}</span>
+                {playerStats && (
+                  <span className="player-accuracy">{playerStats.white.accuracy.toFixed(1)}%</span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Review panel + Move list + Graph + Navigation */}
+          <div className="side-panel">
+            {/* Game Review - Top */}
+            <div className="review-section">
+              <GameReviewPanel
+                analysis={analysis}
+                currentMoveIndex={currentMoveIndex}
+                onJumpToMove={goToMove}
+                onPreviewOpeningLine={handlePreviewOpeningLine}
+                selectedOpeningLine={openingPreviewMove}
+                previewSanLine={openingPreviewSanLine}
+                userMoveFeedback={moveFeedback}
+                isAnalyzingUserMove={isAnalyzingMove}
+              />
+            </div>
+
+            {/* Engine Panel */}
+            <div className="engine-section">
+              <EnginePanel
+                isReady={true}
+                isAnalyzing={isAnalyzing}
+                currentEval={null}
+                fen={fen}
+                progress={progress}
+                depth={depth}
+                onDepthChange={setDepth}
+                onAnalyze={handleAnalyze}
+                onStop={() => setIsAnalyzing(false)}
+              />
+            </div>
+
+            {/* Move List - Main area */}
+            <div className="moves-section">
               <MoveList
                 moves={moves}
                 analysis={analysis}
@@ -528,36 +538,17 @@ export function AnalyzePage() {
                 onGoToMainLine={goToMainLine}
                 isInVariation={isInVariation}
               />
-              </div>
             </div>
 
-            {/* Engine Panel - Bottom */}
-            <div className="engine-panel-wrapper">
-              <EnginePanel
-                isReady={true}
-                isAnalyzing={isAnalyzing}
-                currentEval={null}
-                fen={fen}
-                progress={progress}
-                depth={depth}
-                onDepthChange={setDepth}
-                onAnalyze={handleAnalyze}
-                onStop={() => setIsAnalyzing(false)}
+            {/* Evaluation Graph - Compact */}
+            <div className="graph-section-inline">
+              <EvaluationGraph
+                analysis={analysis}
+                currentMoveIndex={currentMoveIndex}
+                onMoveClick={goToMove}
               />
             </div>
-
           </div>
-        </div>
-      )}
-
-      {/* Evaluation Graph - Below */}
-      {selectedMatch && (
-        <div className="graph-section">
-          <EvaluationGraph
-            analysis={analysis}
-            currentMoveIndex={currentMoveIndex}
-            onMoveClick={goToMove}
-          />
         </div>
       )}
 
