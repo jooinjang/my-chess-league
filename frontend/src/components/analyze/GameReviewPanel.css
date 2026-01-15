@@ -323,4 +323,41 @@
   padding: 6px 2px;
 }
 
+/* User move feedback styles */
+.review-current.user-move {
+  border-color: rgba(74, 158, 255, 0.35);
+  background: rgba(74, 158, 255, 0.08);
+}
+
+.analyzing-indicator {
+  color: var(--color-accent);
+  font-style: italic;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.meta-value.positive {
+  color: var(--color-success);
+}
+
+.meta-value.negative {
+  color: var(--color-error);
+}
+
+.current-judgement.best {
+  background: rgba(0, 200, 140, 0.16);
+  border-color: rgba(0, 200, 140, 0.35);
+  color: rgba(0, 230, 160, 0.95);
+}
+
+.current-judgement.normal {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: var(--color-text-secondary);
+}
+
 

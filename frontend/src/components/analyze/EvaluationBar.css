@@ -2,33 +2,47 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-xs);
+  width: 32px;
+  flex-shrink: 0;
 }
 
-.eval-bar-container {
+.evaluation-bar .bar-container {
   width: 24px;
-  background: #333;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   border-radius: var(--radius-sm);
   overflow: hidden;
-  position: relative;
+  background: #333;
 }
 
-.eval-bar-fill {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+.evaluation-bar .bar-black {
+  background: #333;
+  transition: height 0.3s ease;
+}
+
+.evaluation-bar .bar-white {
   background: #f0f0f0;
   transition: height 0.3s ease;
 }
 
-.eval-value {
-  font-size: 11px;
+.evaluation-bar .eval-text {
+  font-size: 10px;
   font-weight: 600;
   color: var(--color-text-primary);
   font-family: monospace;
   white-space: nowrap;
-  min-width: 45px;
   text-align: center;
   font-variant-numeric: tabular-nums;
+  height: 16px;
+  line-height: 16px;
+  overflow: hidden;
+}
+
+.evaluation-bar .eval-text.top {
+  /* Top label (white advantage) */
+}
+
+.evaluation-bar .eval-text.bottom {
+  /* Bottom label (black advantage) */
 }

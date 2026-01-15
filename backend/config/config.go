@@ -84,8 +84,8 @@ func GetConfig() *Config {
 
 	analysisTimeoutSeconds := 20
 	if analysisEngine == "chess_api" {
-		// Remote engine can take longer per position; keep a safer default.
-		analysisTimeoutSeconds = 60
+		// Remote engine can take longer per position; with retry logic, allow more time.
+		analysisTimeoutSeconds = 120
 	}
 	if v := strings.TrimSpace(os.Getenv("ANALYSIS_TIMEOUT_SECONDS")); v != "" {
 		if parsed, err := strconv.Atoi(v); err == nil && parsed > 0 {
@@ -101,7 +101,7 @@ func GetConfig() *Config {
 	if chessAPIWS == "" {
 		chessAPIWS = "wss://chess-api.com/v1"
 	}
-	chessAPIMaxThinkingMs := 50
+	chessAPIMaxThinkingMs := 100
 	if v := strings.TrimSpace(os.Getenv("CHESS_API_MAX_THINKING_MS")); v != "" {
 		if parsed, err := strconv.Atoi(v); err == nil && parsed > 0 {
 			chessAPIMaxThinkingMs = parsed

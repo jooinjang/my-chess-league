@@ -82,6 +82,12 @@ func SetupRouter() *gin.Engine {
 			chesscom.POST("/sync", handlers.SyncChesscomMonth)
 		}
 
+		// Analysis (single position)
+		analyze := v1.Group("/analyze")
+		{
+			analyze.POST("/position", handlers.AnalyzePosition)
+		}
+
 		// Rankings
 		v1.GET("/rankings", handlers.GetRankings)
 	}

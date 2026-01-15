@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"regexp"
 	"strings"
 
 	"github.com/notnil/chess"
@@ -30,6 +31,16 @@ func (s *PGNService) ParseMainline(pgn string) (*ParsedPGN, error) {
 	if strings.TrimSpace(pgn) == "" {
 		return nil, errors.New("pgn is required")
 	}
+
+	// Workaround for github.com/notnil/chess parser issues:
+	// 1. Remove comments ({...}) to avoid panics on leading comments.
+	reComments := regexp.MustCompile(`\{[^}]*\}`)
+	pgn = reComments.ReplaceAllString(pgn, "")
+
+	// 2. Ensure double newline between headers and moves.
+	// Matches ']' followed by whitespace and a move number (e.g. "1.").
+	reHeaders := regexp.MustCompile(`\]\s+(\d+\.)`)
+	pgn = reHeaders.ReplaceAllString(pgn, "]\n\n$1")
 
 	opt, err := chess.PGN(strings.NewReader(pgn))
 	if err != nil {

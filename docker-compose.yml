@@ -7,7 +7,7 @@ services:
       HOST: 0.0.0.0
       PORT: 8080
       DB_PATH: /data/chess_league.db
-      ANALYSIS_ENGINE: chess_api
+      ANALYSIS_ENGINE: local
       ANALYSIS_TIMEOUT_SECONDS: 60
       CHESS_API_URL: https://chess-api.com/v1
       CHESS_API_WS: wss://chess-api.com/v1

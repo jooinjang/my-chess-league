@@ -51,6 +51,50 @@ func AnalyzeMatch(c *gin.Context) {
 	c.JSON(http.StatusAccepted, Response{Success: true, Data: a})
 }
 
+// POST /api/v1/analyze/position
+// Body: { "fen": "...", "depth": 16 }
+func AnalyzePosition(c *gin.Context) {
+	var req struct {
+		FEN   string `json:"fen"`
+		Depth int    `json:"depth"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, Response{
+			Success: false,
+			Error:   &ErrorInfo{Code: "INVALID_REQUEST", Message: "Invalid request body"},
+		})
+		return
+	}
+
+	fen := strings.TrimSpace(req.FEN)
+	if fen == "" {
+		c.JSON(http.StatusBadRequest, Response{
+			Success: false,
+			Error:   &ErrorInfo{Code: "MISSING_FEN", Message: "FEN is required"},
+		})
+		return
+	}
+
+	depth := req.Depth
+	if depth <= 0 {
+		depth = 16
+	}
+	if depth > 24 {
+		depth = 24
+	}
+
+	eval, err := analysisService.EvaluatePosition(fen, depth)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, Response{
+			Success: false,
+			Error:   &ErrorInfo{Code: "ANALYSIS_ERROR", Message: err.Error()},
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, Response{Success: true, Data: eval})
+}
+
 // GET /api/v1/matches/:id/analysis
 func GetMatchAnalysis(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)

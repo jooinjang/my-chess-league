@@ -1,6 +1,6 @@
 import { apiClient } from './client';
 import { ApiResponse, Match, CreateMatchRequest, BulkCreateMatchRequest } from '../types';
-import type { GameAnalysis } from '../types/analysis';
+import type { GameAnalysis, PositionEvaluation } from '../types/analysis';
 
 interface BulkCreateResponse {
   matches: Match[];
@@ -47,6 +47,14 @@ export const matchApi = {
 
   getAnalysis: async (matchId: number): Promise<GameAnalysis> => {
     const response = await apiClient.get<ApiResponse<GameAnalysis>>(`/matches/${matchId}/analysis`);
+    return response.data.data!;
+  },
+
+  analyzePosition: async (fen: string, depth?: number): Promise<PositionEvaluation> => {
+    const response = await apiClient.post<ApiResponse<PositionEvaluation>>('/analyze/position', {
+      fen,
+      depth: depth || 16,
+    });
     return response.data.data!;
   },
 };

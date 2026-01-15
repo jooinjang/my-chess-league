@@ -2,6 +2,16 @@ import { useMemo } from 'react';
 import type { MoveAnalysis } from '../../types/analysis';
 import './GameReviewPanel.css';
 
+export interface UserMoveFeedback {
+  san: string;
+  annotation: string | null;
+  reason: string;
+  evalBefore: number;
+  evalAfter: number;
+  bestMove: string;
+  bestMoveEval: number;
+}
+
 interface GameReviewPanelProps {
   analysis: MoveAnalysis[];
   currentMoveIndex: number;
@@ -9,6 +19,8 @@ interface GameReviewPanelProps {
   onPreviewOpeningLine?: (firstMoveToken: string | null) => void;
   selectedOpeningLine?: string | null;
   previewSanLine?: string | null;
+  userMoveFeedback?: UserMoveFeedback | null;
+  isAnalyzingUserMove?: boolean;
 }
 
 function pct(n: number | undefined): string {
@@ -26,6 +38,22 @@ function formatOpening(a: MoveAnalysis | undefined): { title: string; subtitle?:
   return { title, subtitle, book };
 }
 
+function formatEval(cp: number): string {
+  if (cp >= 10000) return `+M${Math.ceil((10000 - cp) / 10)}`;
+  if (cp <= -10000) return `-M${Math.ceil((-10000 - cp) / -10)}`;
+  const sign = cp >= 0 ? '+' : '';
+  return `${sign}${(cp / 100).toFixed(2)}`;
+}
+
+function getJudgementClass(annotation: string | null): string {
+  if (!annotation) return 'normal';
+  if (annotation === '!!' || annotation === '!') return 'best';
+  if (annotation === '?!') return 'inaccuracy';
+  if (annotation === '?') return 'mistake';
+  if (annotation === '??') return 'blunder';
+  return 'normal';
+}
+
 export function GameReviewPanel({
   analysis,
   currentMoveIndex,
@@ -33,6 +61,8 @@ export function GameReviewPanel({
   onPreviewOpeningLine,
   selectedOpeningLine,
   previewSanLine,
+  userMoveFeedback,
+  isAnalyzingUserMove,
 }: GameReviewPanelProps) {
   const openingInfo = useMemo(() => formatOpening(analysis[0]), [analysis]);
   const openingMore = useMemo(() => {
@@ -103,7 +133,51 @@ export function GameReviewPanel({
         )}
       </div>
 
-      {current && (
+      {/* User's custom move feedback - shown when user plays a move */}
+      {(userMoveFeedback || isAnalyzingUserMove) && (
+        <div className="review-current user-move">
+          <div className="review-current-top">
+            <div className="current-move">
+              Your move: {isAnalyzingUserMove ? (
+                <span className="analyzing-indicator">Analyzing...</span>
+              ) : (
+                <span className="current-san">{userMoveFeedback?.san}</span>
+              )}
+            </div>
+            {userMoveFeedback && (
+              <div className={`current-judgement ${getJudgementClass(userMoveFeedback.annotation)}`}>
+                {userMoveFeedback.annotation || 'OK'}
+              </div>
+            )}
+          </div>
+          {userMoveFeedback && (
+            <div className="review-current-meta">
+              <div className="meta-row">
+                <span className="meta-label">Evaluation</span>
+                <span className={`meta-value ${userMoveFeedback.evalAfter >= 0 ? 'positive' : 'negative'}`}>
+                  {formatEval(userMoveFeedback.evalAfter)}
+                </span>
+              </div>
+              <div className="meta-row">
+                <span className="meta-label">Eval change</span>
+                <span className={`meta-value ${userMoveFeedback.evalAfter - userMoveFeedback.evalBefore >= 0 ? 'positive' : 'negative'}`}>
+                  {userMoveFeedback.evalAfter - userMoveFeedback.evalBefore >= 0 ? '+' : ''}
+                  {((userMoveFeedback.evalAfter - userMoveFeedback.evalBefore) / 100).toFixed(2)}
+                </span>
+              </div>
+              {userMoveFeedback.reason && <div className="meta-reason">{userMoveFeedback.reason}</div>}
+              {userMoveFeedback.bestMove && (
+                <div className="meta-best">
+                  Best: <span className="mono">{userMoveFeedback.bestMove}</span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Current analyzed move details */}
+      {current && !userMoveFeedback && !isAnalyzingUserMove && (
         <div className="review-current">
           <div className="review-current-top">
             <div className="current-move">

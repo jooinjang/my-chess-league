@@ -99,22 +99,46 @@ func (s *ChessAPIEngineService) EvaluatePosition(ctx context.Context, fen string
 		multiPv = 5
 	}
 
-	taskID := newTaskID()
-	req := chessAPIRequest{
-		FEN: fen,
-		Variants: multiPv,
-		Depth: depth,
-		MaxThinkingTime: s.maxThinkingMs,
-		TaskID: taskID,
+	// Retry logic: try up to 3 times with exponential backoff
+	maxRetries := 3
+	var lastErr error
+
+	for attempt := 0; attempt < maxRetries; attempt++ {
+		if attempt > 0 {
+			// Exponential backoff: 1s, 2s, 4s
+			backoff := time.Duration(1<<uint(attempt-1)) * time.Second
+			select {
+			case <-ctx.Done():
+				return nil, ctx.Err()
+			case <-time.After(backoff):
+			}
+		}
+
+		taskID := newTaskID()
+		req := chessAPIRequest{
+			FEN:             fen,
+			Variants:        multiPv,
+			Depth:           depth,
+			MaxThinkingTime: s.maxThinkingMs,
+			TaskID:          taskID,
+		}
+
+		// Try websocket first.
+		if eval, err := s.evalViaWS(ctx, req); err == nil {
+			return eval, nil
+		} else {
+			lastErr = err
+		}
+
+		// HTTP fallback (single best line).
+		if eval, err := s.evalViaHTTP(ctx, req); err == nil {
+			return eval, nil
+		} else {
+			lastErr = err
+		}
 	}
 
-	// Try websocket first.
-	if eval, err := s.evalViaWS(ctx, req); err == nil {
-		return eval, nil
-	}
-
-	// HTTP fallback (single best line).
-	return s.evalViaHTTP(ctx, req)
+	return nil, fmt.Errorf("all retries exhausted: %w", lastErr)
 }
 
 func (s *ChessAPIEngineService) dialWS(ctx context.Context) (*websocket.Conn, error) {
@@ -176,10 +200,7 @@ func (s *ChessAPIEngineService) evalViaWS(ctx context.Context, req chessAPIReque
 		if err := json.Unmarshal(msgBytes, &m); err != nil {
 			continue
 		}
-		if strings.EqualFold(m.Type, "info") || strings.EqualFold(m.Type, "log") {
-			// could contain status messages; ignore
-			continue
-		}
+
 		if !gotUseful {
 			gotUseful = true
 			_ = conn.SetReadDeadline(finalDeadline)

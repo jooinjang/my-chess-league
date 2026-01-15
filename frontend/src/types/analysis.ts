@@ -126,3 +126,18 @@ export interface MoveNode {
 
 // Path to a node in the tree
 export type MovePath = number[];
+
+// Engine line from position analysis
+export interface EngineLine {
+  pv: string[];
+  depth: number;
+  multiPv: number;
+  cp?: number;   // Centipawns (White perspective)
+  mate?: number; // Mate in N (White perspective, positive = White mates)
+}
+
+// Position evaluation result from backend
+export interface PositionEvaluation {
+  bestMove: string;
+  lines: EngineLine[];
+}

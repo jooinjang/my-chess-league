@@ -20,8 +20,9 @@
 /* Board section with eval bar */
 .board-section {
   display: flex;
-  gap: 0;
+  gap: var(--spacing-xs);
   flex-shrink: 0;
+  align-items: stretch;
 }
 
 /* Right panel - contained card layout */

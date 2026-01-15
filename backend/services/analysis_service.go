@@ -94,6 +94,23 @@ func (s *AnalysisService) StartAnalyzeMatch(matchID uint, depthOverride *int, mu
 	return analysis, nil
 }
 
+// EvaluatePosition evaluates a single position and returns the engine evaluation.
+func (s *AnalysisService) EvaluatePosition(fen string, depth int) (*EnginePositionEval, error) {
+	timeout := time.Duration(s.cfg.AnalysisTimeoutSeconds) * time.Second
+	if timeout <= 0 {
+		timeout = DefaultEngineTimeout(depth)
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
+	multiPv := s.cfg.AnalysisMultiPV
+	if multiPv < 2 {
+		multiPv = 3
+	}
+
+	return s.engine.EvaluatePosition(ctx, fen, depth, multiPv)
+}
+
 func (s *AnalysisService) GetLatestAnalysis(matchID uint) (*models.MatchAnalysis, error) {
 	var a models.MatchAnalysis
 	if err := database.DB.Where("match_id = ?", matchID).

@@ -20,13 +20,33 @@ COPY . .
 RUN CGO_ENABLED=1 go build -o /out/server .
 
 
-FROM debian:bookworm-slim
+# Build Stockfish 17.1 from source
+FROM debian:bookworm-slim AS stockfish-build
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
-    libsqlite3-0 \
-    stockfish \
+    g++ \
+    make \
+    git \
+    wget \
   && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /stockfish
+RUN git clone --depth 1 --branch sf_17.1 https://github.com/official-stockfish/Stockfish.git . \
+  && cd src \
+  && make -j$(nproc) build ARCH=armv8
+
+
+FROM debian:bookworm-slim
+
+# Install runtime dependencies only
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    libsqlite3-0 \
+  && rm -rf /var/lib/apt/lists/*
+
+# Copy Stockfish 17.1 binary from build stage
+COPY --from=stockfish-build /stockfish/src/stockfish /usr/games/stockfish
 
 WORKDIR /app
 COPY --from=build /out/server /app/server

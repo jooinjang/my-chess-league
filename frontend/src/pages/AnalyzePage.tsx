@@ -3,7 +3,6 @@ import { Match } from '../types';
 import type { MoveAnalysis, GameAnalysis } from '../types/analysis';
 import { matchApi } from '../api';
 import { useChessGame } from '../hooks/useChessGame';
-import { formatEvaluation } from '../utils/analysisUtils';
 import { parsePgnTimeData, PgnTimeData } from '../utils/pgnTime';
 import { Chess } from 'chess.js';
 import {
@@ -14,7 +13,6 @@ import {
   EvaluationBar,
   EvaluationGraph,
   EnginePanel,
-  MoveAnnotation,
   GameReviewPanel,
 } from '../components/analyze';
 import './AnalyzePage.css';
@@ -27,6 +25,8 @@ interface MoveFeedback {
   evalAfter: number;
   bestMove: string;
   bestMoveEval: number;
+  evalAfterWhite?: number;
+  mateAfterWhite?: number;
 }
 
 const BOARD_SIZE = 480;
@@ -88,6 +88,11 @@ export function AnalyzePage() {
   useEffect(() => {
     loadMatches();
   }, []);
+
+  // Clear move feedback when navigating to different positions
+  useEffect(() => {
+    setMoveFeedback(null);
+  }, [currentMoveIndex, currentNode]);
 
   const loadMatches = async () => {
     try {
@@ -222,13 +227,152 @@ export function AnalyzePage() {
   }, [analysis, analyzedPositions, getPositions]);
 
   const handleMove = useCallback(async (from: string, to: string, promotion?: string): Promise<boolean> => {
-    // Server-side analysis mode: allow moving pieces, but do not run local engine.
+    // Get FEN before the move for comparison
+    const fenBefore = fen;
+    const isWhiteToMove = fenBefore.includes(' w ');
+
+    // Make the move on the board
     const played = makeMove(from, to, promotion);
     if (!played) return false;
+
+    // Get the UCI notation of the played move
+    const playedMoveUci = `${from}${to}${promotion || ''}`;
+
+    // Start analyzing
+    setIsAnalyzingMove(true);
     setMoveFeedback(null);
+
+    try {
+      // Get the FEN after the move by making the move on a temporary chess instance
+      const tempGame = new Chess(fenBefore);
+      const moveResult = tempGame.move({ from, to, promotion });
+      if (!moveResult) {
+        setIsAnalyzingMove(false);
+        return true;
+      }
+      const fenAfter = tempGame.fen();
+      const sanPlayed = moveResult.san;
+
+      // Analyze both positions in parallel
+      const [evalBeforeResult, evalAfterResult] = await Promise.all([
+        matchApi.analyzePosition(fenBefore, depth),
+        matchApi.analyzePosition(fenAfter, depth),
+      ]);
+
+      const bestMoveFromBefore = evalBeforeResult.bestMove;
+      const bestLineBefore = evalBeforeResult.lines[0];
+      const bestLineAfter = evalAfterResult.lines[0];
+
+      // Get evaluation from White's perspective
+      const evalCpBefore = bestLineBefore?.cp ?? 0;
+      const mateBefore = bestLineBefore?.mate;
+      const evalCpAfter = bestLineAfter?.cp ?? 0;
+      const mateAfter = bestLineAfter?.mate;
+
+      // Convert mate to centipawn equivalent for comparison
+      const mateToCP = (mate: number | undefined): number => {
+        if (mate === undefined) return 0;
+        // Positive mate = White wins, Negative mate = Black wins
+        const sign = mate > 0 ? 1 : -1;
+        const cpValue = 10000 - Math.abs(mate) * 10; // closer mate = higher value
+        return sign * cpValue;
+      };
+
+      // Calculate evaluation from the MOVING PLAYER's perspective
+      // Before: from the player about to move's perspective
+      let evalBeforePlayer: number;
+      if (mateBefore !== undefined) {
+        const mateCP = mateToCP(mateBefore);
+        evalBeforePlayer = isWhiteToMove ? mateCP : -mateCP;
+      } else {
+        evalBeforePlayer = isWhiteToMove ? evalCpBefore : -evalCpBefore;
+      }
+
+      // After: now it's the opponent's turn, so negate again
+      // The evalAfter is from the opponent's best response perspective
+      // A good move for us = bad position for opponent = negative eval for opponent
+      let evalAfterPlayer: number;
+      if (mateAfter !== undefined) {
+        const mateCP = mateToCP(mateAfter);
+        // After move, it's opponent's turn. If eval is good for white and we're white, that's good.
+        evalAfterPlayer = isWhiteToMove ? mateCP : -mateCP;
+      } else {
+        evalAfterPlayer = isWhiteToMove ? evalCpAfter : -evalCpAfter;
+      }
+
+      // Determine if the played move matches the best move
+      const isCorrect = bestMoveFromBefore === playedMoveUci;
+
+      // Calculate evaluation loss (from the player's perspective)
+      // Loss = eval before (best) - eval after (actual result)
+      const evalLoss = evalBeforePlayer - evalAfterPlayer;
+
+      let annotation: string | null = null;
+      let reason = '';
+
+      // Check for mate blunders
+      if (mateBefore !== undefined && mateAfter === undefined) {
+        // Had a winning mate, now it's gone
+        const wasWinningMate = (isWhiteToMove && mateBefore > 0) || (!isWhiteToMove && mateBefore < 0);
+        if (wasWinningMate) {
+          annotation = '??';
+          reason = 'Missed forced mate';
+        }
+      } else if (mateAfter !== undefined && mateBefore === undefined) {
+        // Allowed opponent to have mate
+        const opponentHasMate = (isWhiteToMove && mateAfter < 0) || (!isWhiteToMove && mateAfter > 0);
+        if (opponentHasMate) {
+          annotation = '??';
+          reason = 'Allowed mate';
+        }
+      }
+
+      // If no mate-related annotation, use eval loss
+      if (!annotation) {
+        if (isCorrect) {
+          annotation = '!';
+          reason = 'Best move';
+        } else if (evalLoss > 300) {
+          annotation = '??';
+          reason = 'Blunder';
+        } else if (evalLoss > 100) {
+          annotation = '?';
+          reason = 'Mistake';
+        } else if (evalLoss > 50) {
+          annotation = '?!';
+          reason = 'Inaccuracy';
+        } else if (evalLoss < -100) {
+          // Player improved the position significantly (opponent blundered before?)
+          annotation = '!';
+          reason = 'Great move';
+        } else {
+          reason = 'Good alternative';
+        }
+      }
+
+      // Store eval from White's perspective for the evaluation bar
+      const evalAfterWhite = mateAfter !== undefined ? mateToCP(mateAfter) : evalCpAfter;
+
+      setMoveFeedback({
+        san: sanPlayed,
+        annotation,
+        reason,
+        evalBefore: evalBeforePlayer,
+        evalAfter: evalAfterPlayer,
+        bestMove: bestMoveFromBefore,
+        bestMoveEval: evalBeforePlayer,
+        evalAfterWhite,
+        mateAfterWhite: mateAfter,
+      });
+    } catch (e) {
+      console.error('Failed to analyze move:', e);
+      setMoveFeedback(null);
+    } finally {
       setIsAnalyzingMove(false);
+    }
+
     return true;
-  }, [makeMove]);
+  }, [makeMove, fen, depth]);
 
   const currentAnalysis = useMemo(() => {
     if (currentMoveIndex < 0 || analysis.length === 0) return null;
@@ -236,12 +380,16 @@ export function AnalyzePage() {
   }, [currentMoveIndex, analysis]);
 
   const currentEvalForDisplay = useMemo(() => {
+    // If we have move feedback from user's move, use that for the eval bar
+    if (moveFeedback && moveFeedback.evalAfterWhite !== undefined) {
+      return { score: moveFeedback.evalAfterWhite, mate: moveFeedback.mateAfterWhite };
+    }
     if (currentAnalysis) {
       // Always use White's perspective for UI elements (bar/graph/top-lines)
       return { score: currentAnalysis.evalAfterWhite, mate: currentAnalysis.mateAfterWhite };
     }
     return { score: 0, mate: undefined as number | undefined };
-  }, [currentAnalysis]);
+  }, [currentAnalysis, moveFeedback]);
 
   const bestMoveArrow = useMemo((): Array<[string, string]> => {
     if (currentAnalysis && currentAnalysis.pv.length > 0) {
@@ -357,6 +505,8 @@ export function AnalyzePage() {
                   onPreviewOpeningLine={handlePreviewOpeningLine}
                   selectedOpeningLine={openingPreviewMove}
                   previewSanLine={openingPreviewSanLine}
+                  userMoveFeedback={moveFeedback}
+                  isAnalyzingUserMove={isAnalyzingMove}
                 />
               <TopLinesPanel fen={fen} lines={[]} depth={depth} />
               </div>
@@ -396,47 +546,6 @@ export function AnalyzePage() {
               />
             </div>
 
-            {/* Move Feedback (when user makes a move) */}
-            {moveFeedback && (
-              <div className="move-feedback">
-                <h4>Your Move: {moveFeedback.san}</h4>
-                <div className="feedback-content">
-                  <div className="feedback-row">
-                    <span className="feedback-label">Judgment</span>
-                    <span className="feedback-value">
-                      {moveFeedback.annotation ? (
-                        <MoveAnnotation
-                          annotation={moveFeedback.annotation as '!!' | '!' | '!?' | '?!' | '?' | '??'}
-                          showTooltip
-                          reason={moveFeedback.reason}
-                        />
-                      ) : (
-                        <span style={{ color: 'var(--color-text-muted)' }}>Normal</span>
-                      )}
-                    </span>
-                  </div>
-                  <div className="feedback-row">
-                    <span className="feedback-label">Eval</span>
-                    <span className={`feedback-value ${moveFeedback.evalAfter >= 0 ? 'positive' : 'negative'}`}>
-                      {formatEvaluation(moveFeedback.evalAfter)}
-                    </span>
-                  </div>
-                  {moveFeedback.bestMove && (
-                    <div className="feedback-best-move">
-                      Best: {moveFeedback.bestMove}
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {isAnalyzingMove && (
-              <div className="move-feedback">
-                <p style={{ textAlign: 'center', color: 'var(--color-text-muted)', margin: 0 }}>
-                  Analyzing...
-                </p>
-              </div>
-            )}
           </div>
         </div>
       )}
