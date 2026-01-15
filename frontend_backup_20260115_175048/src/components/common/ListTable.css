@@ -1,0 +1,96 @@
+.list-table {
+  background: #1a1a2e;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.list-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.list-table th,
+.list-table td {
+  padding: 1rem;
+  text-align: left;
+}
+
+.list-table th {
+  background: #16213e;
+  color: #a0a0a0;
+  font-weight: 500;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+}
+
+.list-table td {
+  color: #fff;
+  border-bottom: 1px solid #333;
+}
+
+.list-table tr:last-child td {
+  border-bottom: none;
+}
+
+.list-table tr:hover td {
+  background: #16213e;
+}
+
+.list-table .muted {
+  color: #a0a0a0;
+  font-size: 0.875rem;
+}
+
+.list-table .actions {
+  text-align: right;
+}
+
+.list-table .row-link {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.list-table .row-link:hover {
+  color: #4a9eff;
+}
+
+.list-table .pill {
+  display: inline-block;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid #2a2a40;
+  background: rgba(15, 15, 26, 0.35);
+  color: #a0a0a0;
+  margin-right: 8px;
+}
+
+.list-table .btn-delete {
+  background: transparent;
+  color: #ff4a4a;
+  border: 1px solid #ff4a4a;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: all 0.2s;
+}
+
+.list-table .btn-delete:hover {
+  background: #ff4a4a;
+  color: #fff;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #a0a0a0;
+  background: #1a1a2e;
+  border-radius: 8px;
+}
+
+

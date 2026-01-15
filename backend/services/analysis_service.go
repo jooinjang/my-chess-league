@@ -126,6 +126,16 @@ func (s *AnalysisService) GetLatestAnalysis(matchID uint) (*models.MatchAnalysis
 	return &a, nil
 }
 
+// GetAnalyzedMatchIDs returns the list of match IDs that have completed analysis.
+func (s *AnalysisService) GetAnalyzedMatchIDs() ([]uint, error) {
+	var ids []uint
+	err := database.DB.Model(&models.MatchAnalysis{}).
+		Where("status = ?", models.MatchAnalysisComplete).
+		Distinct("match_id").
+		Pluck("match_id", &ids).Error
+	return ids, err
+}
+
 func (s *AnalysisService) runAnalysis(ctx context.Context, analysisID uint, matchID uint, parsed *ParsedPGN, depth int, multiPv int, started time.Time) error {
 	start := started
 	// Evaluate all positions (including start), similar to the reference project's evaluateGame flow.

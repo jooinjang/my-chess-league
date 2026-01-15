@@ -1,27 +1,44 @@
 .header {
-  background-color: var(--color-bg-secondary);
-  padding: 1rem 0;
-  box-shadow: var(--shadow-md);
+  background: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border);
   position: sticky;
   top: 0;
   z-index: var(--z-dropdown);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .header-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 1.5rem;
+  height: 56px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
+/* Logo */
 .logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
   text-decoration: none;
   z-index: calc(var(--z-dropdown) + 2);
+}
+
+.logo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent);
+}
+
+.logo-text {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  letter-spacing: -0.025em;
 }
 
 .logo-my {
@@ -31,23 +48,57 @@
 /* Desktop Navigation */
 .nav {
   display: flex;
-  gap: 1.5rem;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .nav-link {
-  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
   text-decoration: none;
+  font-size: 0.875rem;
   font-weight: 500;
-  transition: color var(--transition-normal);
-  padding: 0.5rem 0;
+  transition: all var(--transition-fast);
 }
 
-.nav-link:hover,
+.nav-link:hover {
+  color: var(--color-text-primary);
+  background: var(--color-bg-hover);
+}
+
 .nav-link.active {
   color: var(--color-text-primary);
+  background: var(--color-bg-elevated);
 }
 
-/* Hamburger Menu Toggle - Hidden on Desktop */
+.nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+}
+
+.nav-link:hover .nav-icon,
+.nav-link.active .nav-icon {
+  opacity: 1;
+}
+
+.nav-link.active .nav-icon {
+  color: var(--color-accent);
+}
+
+/* Hide icons on desktop to keep it minimal */
+@media (min-width: 769px) {
+  .nav-icon {
+    display: none;
+  }
+}
+
+/* Hamburger Menu Toggle */
 .menu-toggle {
   display: none;
   flex-direction: column;
@@ -61,11 +112,17 @@
   cursor: pointer;
   padding: 8px;
   z-index: calc(var(--z-dropdown) + 2);
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
+}
+
+.menu-toggle:hover {
+  background: var(--color-bg-hover);
 }
 
 .menu-bar {
   display: block;
-  width: 24px;
+  width: 20px;
   height: 2px;
   background: var(--color-text-primary);
   border-radius: 2px;
@@ -84,13 +141,17 @@
   transform: rotate(-45deg) translate(5px, -5px);
 }
 
-/* Overlay - Hidden on Desktop */
+/* Overlay */
 .nav-overlay {
   display: none;
 }
 
 /* Mobile Styles */
 @media (max-width: 768px) {
+  .header-container {
+    padding: 0 1rem;
+  }
+
   .menu-toggle {
     display: flex;
   }
@@ -99,14 +160,14 @@
     position: fixed;
     top: 0;
     right: -100%;
-    width: 70%;
-    max-width: 300px;
+    width: 280px;
     height: 100vh;
     background: var(--color-bg-secondary);
     flex-direction: column;
-    padding: 5rem 2rem 2rem;
-    gap: 0;
-    box-shadow: var(--shadow-lg);
+    align-items: stretch;
+    padding: 5rem 1.5rem 2rem;
+    gap: 0.25rem;
+    border-left: 1px solid var(--color-border);
     transition: right var(--transition-slow);
     z-index: calc(var(--z-dropdown) + 1);
   }
@@ -116,13 +177,13 @@
   }
 
   .nav-link {
-    padding: 1rem 0;
-    font-size: 1.125rem;
-    border-bottom: 1px solid var(--color-border);
+    padding: 0.875rem 1rem;
+    font-size: 0.9375rem;
+    border-radius: var(--radius-md);
   }
 
-  .nav-link:last-child {
-    border-bottom: none;
+  .nav-icon {
+    display: flex;
   }
 
   .nav-overlay {
@@ -132,21 +193,18 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
     z-index: var(--z-dropdown);
   }
 
-  .logo {
-    font-size: 1.25rem;
+  .logo-text {
+    font-size: 1rem;
   }
 }
 
 @media (max-width: 480px) {
   .nav {
-    width: 85%;
-  }
-
-  .logo {
-    font-size: 1.1rem;
+    width: 100%;
   }
 }

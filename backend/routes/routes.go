@@ -88,6 +88,12 @@ func SetupRouter() *gin.Engine {
 			analyze.POST("/position", handlers.AnalyzePosition)
 		}
 
+		// Analysis status
+		analysis := v1.Group("/analysis")
+		{
+			analysis.GET("/matches", handlers.GetAnalyzedMatchIDs)
+		}
+
 		// Rankings
 		v1.GET("/rankings", handlers.GetRankings)
 	}

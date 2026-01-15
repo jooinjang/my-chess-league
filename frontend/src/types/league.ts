@@ -55,5 +55,3 @@ export interface LeagueStanding {
   draws: number;
   losses: number;
 }
-
-

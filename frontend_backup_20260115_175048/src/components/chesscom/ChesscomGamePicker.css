@@ -1,0 +1,130 @@
+.chesscom-game-picker {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.picker-header h3 {
+  margin: 0 0 6px 0;
+}
+
+.picker-subtitle {
+  color: #374151;
+  font-size: 14px;
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  margin-top: 12px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.btn-search {
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+}
+
+.results {
+  margin-top: 12px;
+}
+
+.empty {
+  padding: 12px;
+  border: 1px dashed #d1d5db;
+  border-radius: 8px;
+  color: #6b7280;
+}
+
+.games {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.game {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.game.selected {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.game input {
+  margin-top: 3px;
+}
+
+.meta {
+  display: grid;
+  grid-template-columns: 160px 1fr 80px 140px 60px;
+  gap: 10px;
+  width: 100%;
+  align-items: center;
+  font-size: 13px;
+}
+
+.players .white {
+  font-weight: 600;
+}
+.players .black {
+  font-weight: 600;
+}
+.players .vs {
+  margin: 0 6px;
+  color: #6b7280;
+}
+
+.link {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.btn-primary,
+.btn-secondary {
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+}
+
+.btn-primary {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #fff;
+}
+
+.error-message {
+  margin-top: 10px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+

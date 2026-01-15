@@ -53,5 +53,3 @@ export const leagueApi = {
     return res.data.data!;
   },
 };
-
-

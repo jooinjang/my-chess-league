@@ -1,0 +1,165 @@
+.user-detail .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.user-detail h1 {
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.user-detail .sub {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.user-detail .grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.user-detail .card {
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  border: 1px solid var(--color-border);
+}
+
+.user-detail .card h3 {
+  margin: 0 0 0.75rem 0;
+  color: var(--color-text-primary);
+  font-size: 1rem;
+}
+
+.user-detail .memo {
+  color: var(--color-text-primary);
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+.user-detail .meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.user-detail .meta .row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.user-detail .meta .k {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+}
+
+.user-detail .meta .v {
+  color: var(--color-text-primary);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.875rem;
+}
+
+.user-detail .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.user-detail .user-matches {
+  background: #1a1a2e;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.user-detail .user-matches table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.user-detail .user-matches th,
+.user-detail .user-matches td {
+  padding: 0.875rem 1rem;
+  text-align: left;
+}
+
+.user-detail .user-matches th {
+  background: #16213e;
+  color: #a0a0a0;
+  font-weight: 500;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+}
+
+.user-detail .user-matches td {
+  color: #fff;
+  border-bottom: 1px solid #333;
+}
+
+.user-detail .user-matches tr:last-child td {
+  border-bottom: none;
+}
+
+.user-detail .user-matches tr:hover td {
+  background: #16213e;
+}
+
+.user-detail .user-matches .date,
+.user-detail .user-matches .game {
+  color: #a0a0a0;
+  font-size: 0.875rem;
+}
+
+.user-detail .user-matches .color {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.user-detail .user-matches .color.white {
+  color: #fff;
+}
+
+.user-detail .user-matches .color.black {
+  color: #333;
+  text-shadow: 0 0 2px #fff;
+}
+
+.user-detail .user-matches .opponent {
+  font-weight: 600;
+}
+
+.user-detail .user-matches .user-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.user-detail .user-matches .user-link:hover {
+  color: #4a9eff;
+}
+
+.user-detail .user-matches .result {
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .user-detail .page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .user-detail .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+

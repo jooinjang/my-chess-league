@@ -43,5 +43,3 @@ export const tournamentApi = {
     return res.data.data!;
   },
 };
-
-

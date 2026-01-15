@@ -1,227 +1,268 @@
+/* TournamentsPage - Modern Design */
 .tournament-create {
-  background: #1a1a2e;
-  border-radius: 8px;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
   padding: 1.5rem;
   margin-bottom: 1.5rem;
+  border: 1px solid var(--color-border);
 }
 
 .tournament-create h3 {
-  color: #fff;
-  margin: 0 0 1rem 0;
-  font-size: 1.25rem;
-}
-
-.create-top {
-  margin-bottom: 1.25rem;
-}
-
-.field label {
-  display: block;
-  color: #a0a0a0;
+  color: var(--color-text-primary);
+  margin: 0 0 1.25rem 0;
+  font-size: 1.125rem;
   font-weight: 600;
+}
+
+.tournaments-page .create-top {
+  margin-bottom: 1.5rem;
+}
+
+.tournaments-page .field label {
+  display: block;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  font-size: 0.875rem;
   margin-bottom: 0.5rem;
 }
 
-.field input {
+.tournaments-page .field input {
   width: 100%;
-  background: #16213e;
-  border: 1px solid #2a2a40;
-  color: #fff;
-  border-radius: 6px;
-  padding: 0.75rem 0.85rem;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-sm);
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
   outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.field input:focus {
-  border-color: #4a9eff;
+.tournaments-page .field input::placeholder {
+  color: var(--color-text-muted);
 }
 
-.hint {
-  margin-top: 0.4rem;
-  color: #666;
-  font-size: 0.85rem;
+.tournaments-page .field input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-subtle);
 }
 
-.create-grid {
+.tournaments-page .hint {
+  margin-top: 0.375rem;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+.tournaments-page .create-grid {
   display: grid;
   grid-template-columns: 1.2fr 0.8fr;
-  gap: 1rem;
+  gap: 1.25rem;
   align-items: start;
 }
 
 @media (max-width: 900px) {
-  .create-grid {
+  .tournaments-page .create-grid {
     grid-template-columns: 1fr;
   }
 }
 
-.section-title {
+.tournaments-page .section-title {
   display: flex;
   align-items: baseline;
   gap: 0.5rem;
-  color: #fff;
-  font-weight: 700;
+  color: var(--color-text-primary);
+  font-weight: 600;
+  font-size: 0.9375rem;
   margin-bottom: 0.75rem;
 }
 
-.section-title .count {
-  color: #a0a0a0;
-  font-weight: 600;
+.tournaments-page .section-title .count {
+  color: var(--color-text-muted);
+  font-weight: 500;
+  font-size: 0.8125rem;
 }
 
-.user-list {
+.tournaments-page .user-list {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.375rem;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
-.search input {
+.tournaments-page .search input {
   width: 100%;
-  background: #16213e;
-  border: 1px solid #2a2a40;
-  color: #fff;
-  border-radius: 6px;
-  padding: 0.75rem 0.85rem;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-sm);
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
   outline: none;
   margin-bottom: 0.75rem;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.search input:focus {
-  border-color: #4a9eff;
+.tournaments-page .search input::placeholder {
+  color: var(--color-text-muted);
 }
 
-.user-row {
+.tournaments-page .search input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-subtle);
+}
+
+.tournaments-page .user-row {
   display: grid;
   grid-template-columns: 20px 1fr auto auto;
   gap: 0.75rem;
   align-items: center;
-  padding: 0.75rem;
-  background: #16213e;
-  border: 1px solid #2a2a40;
-  border-radius: 6px;
+  padding: 0.625rem 0.75rem;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
   cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
-.user-row.selected {
-  border-color: rgba(74, 158, 255, 0.6);
+.tournaments-page .user-row:hover {
+  background: var(--color-bg-hover);
 }
 
-.user-row .name {
-  color: #fff;
-  font-weight: 600;
+.tournaments-page .user-row.selected {
+  border-color: var(--color-accent-border);
+  background: var(--color-accent-subtle);
 }
 
-.user-row .sub {
-  color: #666;
-  font-size: 0.85rem;
+.tournaments-page .user-row .name {
+  color: var(--color-text-primary);
+  font-weight: 500;
+  font-size: 0.875rem;
 }
 
-.user-row .rating {
-  color: #4a9eff;
+.tournaments-page .user-row .sub {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+.tournaments-page .user-row .rating {
+  color: var(--color-accent);
   font-weight: 700;
+  font-size: 0.875rem;
 }
 
-.right {
+.tournaments-page .right {
   position: relative;
 }
 
-.selected-panel {
+.tournaments-page .selected-panel {
   position: sticky;
-  bottom: 1rem;
-  background: #16213e;
-  border: 1px solid #2a2a40;
-  border-radius: 8px;
+  top: 1rem;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
   padding: 1rem;
 }
 
-.panel-title {
-  color: #fff;
-  font-weight: 700;
+.tournaments-page .panel-title {
+  color: var(--color-text-primary);
+  font-weight: 600;
+  font-size: 0.9375rem;
   margin-bottom: 0.75rem;
 }
 
-.panel-empty {
-  color: #a0a0a0;
+.tournaments-page .panel-empty {
+  color: var(--color-text-muted);
   padding: 1rem 0;
+  font-size: 0.875rem;
+  text-align: center;
 }
 
-.selected-list {
+.tournaments-page .selected-list {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  max-height: 340px;
+  gap: 0.375rem;
+  max-height: 300px;
   overflow: auto;
-  padding-right: 4px;
 }
 
-.selected-item {
+.tournaments-page .selected-item {
   display: flex;
   justify-content: space-between;
   gap: 0.75rem;
   align-items: center;
-  padding: 0.65rem 0.75rem;
-  border: 1px solid #2a2a40;
-  border-radius: 6px;
-  background: rgba(15, 15, 26, 0.35);
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-secondary);
+  transition: background var(--transition-fast);
 }
 
-.selected-item .n {
-  color: #fff;
-  font-weight: 600;
+.tournaments-page .selected-item:hover {
+  background: var(--color-bg-hover);
 }
 
-.selected-item .seed {
+.tournaments-page .selected-item .info {
+  flex: 1;
+  min-width: 0;
+}
+
+.tournaments-page .selected-item .n {
+  color: var(--color-text-primary);
+  font-weight: 500;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+}
+
+.tournaments-page .selected-item .seed {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
-  background: rgba(74, 158, 255, 0.2);
-  border: 1px solid rgba(74, 158, 255, 0.35);
-  color: #4a9eff;
-  font-size: 12px;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-xs);
+  background: var(--color-accent-subtle);
+  border: 1px solid var(--color-accent-border);
+  color: var(--color-accent);
+  font-size: 0.6875rem;
   font-weight: 700;
   margin-right: 0.5rem;
-}
-
-.selected-item .m {
-  color: #666;
-  font-size: 0.85rem;
-}
-
-.selected-item .dot {
-  margin: 0 0.35rem;
-}
-
-.remove {
-  background: transparent;
-  border: 1px solid #ff4a4a;
-  color: #ff4a4a;
-  padding: 0.4rem 0.6rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s;
   flex-shrink: 0;
 }
 
-.remove:hover {
-  background: #ff4a4a;
-  color: #fff;
+.tournaments-page .selected-item .m {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  margin-top: 0.125rem;
 }
 
-.panel-actions {
+.tournaments-page .selected-item .dot {
+  margin: 0 0.25rem;
+}
+
+.tournaments-page .remove {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--color-error);
+  padding: 0.375rem 0.625rem;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.tournaments-page .remove:hover {
+  background: var(--color-error-subtle);
+  border-color: var(--color-error);
+}
+
+.tournaments-page .panel-actions {
   display: flex;
   justify-content: flex-end;
-  margin-top: 0.9rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border-subtle);
 }
-
-.error-message {
-  margin: 12px 0;
-  background: #ff4a4a20;
-  color: #ff4a4a;
-  padding: 10px;
-  border-radius: 4px;
-}
-
-

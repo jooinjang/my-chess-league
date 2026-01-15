@@ -173,5 +173,3 @@ export function ChesscomGamePicker({ player1, player2, title, requireDecisive, o
     </div>
   );
 }
-
-

@@ -127,4 +127,22 @@ func GetMatchAnalysis(c *gin.Context) {
 	c.JSON(http.StatusOK, Response{Success: true, Data: dto})
 }
 
+// GET /api/v1/analysis/matches
+// Returns list of match IDs that have completed analysis
+func GetAnalyzedMatchIDs(c *gin.Context) {
+	ids, err := analysisService.GetAnalyzedMatchIDs()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, Response{
+			Success: false,
+			Error:   &ErrorInfo{Code: "DB_ERROR", Message: err.Error()},
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, Response{
+		Success: true,
+		Data:    gin.H{"match_ids": ids},
+	})
+}
+
 

@@ -254,5 +254,3 @@ export function TournamentsPage() {
     </div>
   );
 }
-
-

@@ -1,0 +1,48 @@
+.match-form {
+  background: #1a1a2e;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  animation: fadeIn var(--transition-slow) ease-out;
+}
+
+.match-form h3 {
+  margin: 0 0 1rem;
+  color: #fff;
+}
+
+/* form-row, form-group base styles are in index.css */
+
+.result-options {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.result-option {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid #333;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  color: #a0a0a0;
+}
+
+.result-option input {
+  display: none;
+}
+
+.result-option:hover {
+  border-color: #4a9eff;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.result-option.selected {
+  background: #4a9eff;
+  border-color: #4a9eff;
+  color: #fff;
+}
+
+/* form-actions, btn-*, error-message styles are in index.css */

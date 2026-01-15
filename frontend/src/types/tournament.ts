@@ -51,5 +51,3 @@ export interface CreateTournamentRequest {
   name: string;
   participant_user_ids: number[];
 }
-
-

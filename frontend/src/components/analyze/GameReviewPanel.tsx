@@ -228,5 +228,3 @@ export function GameReviewPanel({
     </div>
   );
 }
-
-

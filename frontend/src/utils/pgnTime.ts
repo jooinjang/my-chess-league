@@ -137,5 +137,3 @@ export function parsePgnTimeData(pgn: string): PgnTimeData {
     elapsedSeconds: hasEmt ? elapsedSeconds : undefined,
   };
 }
-
-

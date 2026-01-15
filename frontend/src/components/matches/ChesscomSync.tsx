@@ -143,5 +143,3 @@ export function ChesscomSync({ onComplete, onCancel }: ChesscomSyncProps) {
     </div>
   );
 }
-
-

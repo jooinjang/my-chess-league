@@ -95,5 +95,3 @@ export function TopLinesPanel({
     </div>
   );
 }
-
-

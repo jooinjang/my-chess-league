@@ -1,0 +1,48 @@
+.evaluation-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 32px;
+  flex-shrink: 0;
+}
+
+.evaluation-bar .bar-container {
+  width: 24px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: #333;
+}
+
+.evaluation-bar .bar-black {
+  background: #333;
+  transition: height 0.3s ease;
+}
+
+.evaluation-bar .bar-white {
+  background: #f0f0f0;
+  transition: height 0.3s ease;
+}
+
+.evaluation-bar .eval-text {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  font-family: monospace;
+  white-space: nowrap;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  height: 16px;
+  line-height: 16px;
+  overflow: hidden;
+}
+
+.evaluation-bar .eval-text.top {
+  /* Top label (white advantage) */
+}
+
+.evaluation-bar .eval-text.bottom {
+  /* Bottom label (black advantage) */
+}

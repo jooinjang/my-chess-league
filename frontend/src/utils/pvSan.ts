@@ -33,5 +33,3 @@ export function pvUciToSanLine(fen: string, pv: string[], maxPlies: number = 12)
     return pv.slice(0, maxPlies).join(' ');
   }
 }
-
-
